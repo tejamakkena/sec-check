@@ -1,1018 +1,906 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Digital Asset Defense Console — an interactive command-center mapping modern fraud threat vectors against a tactical, step-by-step personal security manual." />
-<meta name="color-scheme" content="dark" />
-<title>Digital Asset Defense Console — Threats &amp; Security Stack</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Personal Digital Security Blueprint — visual dashboard covering all six security domains, don't-panic call guide, bank protection, password managers, MFA tools, and a complete resource directory."/>
+<title>Personal Digital Security Blueprint</title>
 <style>
-  /* ============================================================
-     DESIGN TOKENS
-     ============================================================ */
-  :root {
-    /* Surfaces */
-    --bg:        #0b0f19;   /* deep slate / navy backdrop          */
-    --bg-elev:   #0d1322;   /* elevated panels                     */
-    --card:      #161e2e;   /* base card surface                   */
-    --card-2:    #1b2438;   /* nested blocks / hover surface       */
-    --border:    #243049;   /* hairline borders                    */
-    --border-2:  #2c3a57;
+:root {
+  --bg:#08090f; --surface:#0e1420; --card:#131b2a; --card2:#192236;
+  --border:#1c2b40; --border2:#243550;
+  --text:#e8edf7; --body:#b0c2da; --muted:#607898; --faint:#3a506e;
+  --red:#ef4444; --red2:#f87171; --amber:#f59e0b; --amber2:#fbbf24;
+  --green:#10b981; --green2:#34d399; --blue:#3b82f6; --blue2:#60a5fa;
+  --cyan:#06b6d4; --cyan2:#22d3ee; --purple:#8b5cf6; --purple2:#a78bfa;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px; --r-sm:9px; --pill:999px;
+  --sh:0 20px 50px -18px rgba(0,0,0,.9);
+  --sh-sm:0 8px 24px -10px rgba(0,0,0,.7);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--body);
+  line-height:1.62;-webkit-font-smoothing:antialiased;min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 1400px 700px at 50% -80px,rgba(59,130,246,.11),transparent 55%),
+    radial-gradient(ellipse 800px 500px at 95% 40%,rgba(16,185,129,.07),transparent 55%),
+    radial-gradient(ellipse 700px 500px at 5% 80%,rgba(139,92,246,.07),transparent 55%);
+  background-attachment:fixed;
+}
+a{color:inherit}
+::selection{background:rgba(59,130,246,.3)}
+.page{max-width:1380px;margin:0 auto;padding:clamp(14px,4vw,44px)}
+.section{margin-top:clamp(36px,5.5vw,68px)}
 
-    /* Type */
-    --text:      #eaf0fa;   /* crisp off-white headline copy       */
-    --body:      #c4d0e3;   /* silver body copy                    */
-    --muted:     #8595b0;   /* secondary / captions                */
-    --faint:     #5d6b87;   /* tertiary labels                     */
+/* ── HEADER ── */
+.hdr{
+  position:relative;border:1px solid var(--border);border-radius:18px;
+  background:linear-gradient(160deg,#0d1826,#09111f);
+  padding:clamp(22px,4vw,42px);overflow:hidden;box-shadow:var(--sh);
+}
+.hdr::before{
+  content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;
+  background:
+    radial-gradient(ellipse 700px 350px at 75% -30%,rgba(16,185,129,.14),transparent),
+    radial-gradient(ellipse 500px 250px at 25% 130%,rgba(59,130,246,.1),transparent);
+}
+.hdr::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent 0%,var(--blue) 25%,var(--green) 55%,var(--purple) 80%,transparent 100%);
+}
+.hdr-inner{position:relative;display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;justify-content:space-between}
+.hdr-left{flex:1;min-width:260px}
+.hdr-kicker{
+  display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--green2);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);
+  padding:5px 12px;border-radius:var(--pill);
+}
+.hdr-kicker::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation:blink 2.2s infinite;
+}
+@keyframes blink{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.55)}60%{box-shadow:0 0 0 7px rgba(16,185,129,0)}}
+h1.hdr-title{
+  font-size:clamp(1.9rem,4.2vw,3.2rem);font-weight:900;letter-spacing:-.03em;
+  color:var(--text);line-height:1.08;margin-bottom:14px;
+}
+h1.hdr-title span{
+  background:linear-gradient(90deg,var(--green2),var(--blue2),var(--cyan2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hdr-sub{font-size:clamp(.95rem,1.5vw,1.1rem);color:var(--body);max-width:60ch;margin-bottom:22px}
+.hdr-stats{display:flex;flex-wrap:wrap;gap:10px}
+.stat{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 14px;
+  border-radius:var(--pill);border:1px solid var(--border2);background:rgba(255,255,255,.03);
+  font-size:.8rem;color:var(--muted);
+}
+.stat strong{color:var(--text)}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot-r{background:var(--red);box-shadow:0 0 8px var(--red)}
+.dot-a{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.dot-g{background:var(--green);box-shadow:0 0 8px var(--green)}
 
-    /* Danger palette (LEFT — threats) */
-    --danger:    #f43f5e;
-    --danger-2:  #fb7185;
-    --amber:     #f59e0b;
-    --amber-2:   #fbbf24;
+/* security score card */
+.hdr-score{
+  flex:none;background:var(--card2);border:1px solid var(--border2);border-radius:16px;
+  padding:20px 24px;text-align:center;min-width:160px;
+}
+.score-ring{
+  width:90px;height:90px;border-radius:50%;margin:0 auto 12px;
+  background:conic-gradient(var(--amber) 0% 50%,rgba(255,255,255,.06) 50% 100%);
+  display:grid;place-items:center;
+}
+.score-inner{
+  width:70px;height:70px;border-radius:50%;background:var(--card2);
+  display:grid;place-items:center;
+}
+.score-num{font-size:1.6rem;font-weight:900;color:var(--amber2)}
+.score-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.score-sub{font-size:.78rem;color:var(--amber2);font-weight:600;margin-top:4px}
 
-    /* Safe palette (RIGHT — defenses) */
-    --blue:      #3b82f6;
-    --cyan:      #22d3ee;
-    --emerald:   #10b981;
-    --emerald-2: #34d399;
+/* ── SECTION HEADER ── */
+.sh{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.sh-icon{
+  width:44px;height:44px;border-radius:12px;border:1px solid var(--border2);
+  display:grid;place-items:center;flex:none;
+}
+.sh-icon svg{width:22px;height:22px}
+.sh-title{font-size:clamp(1.15rem,2vw,1.55rem);font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.1}
+.sh-sub{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
+.ic-blue{color:var(--blue2);background:rgba(59,130,246,.1)} .sb-blue{color:var(--blue2)}
+.ic-amber{color:var(--amber2);background:rgba(245,158,11,.1)} .sb-amber{color:var(--amber2)}
+.ic-green{color:var(--green2);background:rgba(16,185,129,.1)} .sb-green{color:var(--green2)}
+.ic-purple{color:var(--purple2);background:rgba(139,92,246,.1)} .sb-purple{color:var(--purple2)}
+.ic-cyan{color:var(--cyan2);background:rgba(6,182,212,.1)} .sb-cyan{color:var(--cyan2)}
+.ic-muted{color:var(--body);background:rgba(255,255,255,.05)} .sb-muted{color:var(--muted)}
 
-    /* Geometry */
-    --radius:    16px;
-    --radius-sm: 10px;
-    --radius-pill: 999px;
-    --shadow:    0 18px 40px -20px rgba(0,0,0,.85);
-    --shadow-sm: 0 6px 18px -10px rgba(0,0,0,.7);
+/* ── SECURITY MAP ── */
+.diagram-wrap{
+  background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:6px;box-shadow:var(--sh);overflow:hidden;
+}
+.diagram-wrap svg{width:100%;height:auto;display:block}
 
-    /* Fonts */
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  }
+/* ── DON'T PANIC ── */
+.panic-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:820px){.panic-grid{grid-template-columns:1fr}}
 
-  /* ============================================================
-     RESET
-     ============================================================ */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body {
-    font-family: var(--sans);
-    color: var(--body);
-    line-height: 1.62;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    background:
-      radial-gradient(1100px 560px at 12% -8%, rgba(244, 63, 94, .12), transparent 60%),
-      radial-gradient(1100px 560px at 88% -8%, rgba(16, 185, 129, .12), transparent 60%),
-      radial-gradient(900px 700px at 50% 120%, rgba(59, 130, 246, .08), transparent 60%),
-      var(--bg);
-    background-attachment: fixed;
-  }
-  a { color: inherit; }
-  ::selection { background: rgba(59, 130, 246, .35); color: #fff; }
+.flow-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:22px;box-shadow:var(--sh-sm);
+}
+.flow-card h3{
+  font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:18px;
+  display:flex;align-items:center;gap:8px;
+}
+.flow-card h3 em{
+  background:var(--amber);color:#000;font-style:normal;font-size:.68rem;font-weight:800;
+  padding:2px 8px;border-radius:6px;letter-spacing:.05em;
+}
+.flow{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.fn{
+  padding:10px 14px;border-radius:10px;font-size:.83rem;font-weight:600;
+  color:var(--text);border:1.5px solid var(--border2);background:var(--card2);text-align:center;
+}
+.fn-start{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.45);color:var(--blue2)}
+.fn-q{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--amber2)}
+.fn-danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.45);color:var(--red2)}
+.fn-safe{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.35);color:var(--green2);font-size:.8rem}
+.farrow{width:2px;height:18px;background:var(--border2);margin:0 auto;position:relative}
+.farrow::after{content:"▼";position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);font-size:.5rem;color:var(--muted)}
+.fsplit{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.flabel{font-family:var(--mono);font-size:.63rem;letter-spacing:.1em;color:var(--muted);text-align:center;margin:4px 0 2px}
+.flow-rule{
+  margin-top:16px;padding:12px 14px;background:rgba(16,185,129,.06);
+  border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:.81rem;color:var(--green2);
+}
 
-  /* ============================================================
-     LAYOUT SHELL
-     ============================================================ */
-  .shell {
-    width: min(1320px, 100%);
-    margin: 0 auto;
-    padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 40px) 64px;
-  }
+.signals-col{display:flex;flex-direction:column;gap:14px}
+.sig-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh-sm)}
+.sig-card h3{font-size:.88rem;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.sig-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.sig-list li{display:flex;gap:9px;font-size:.82rem;align-items:flex-start}
+.sig-list li::before{
+  content:"";flex:none;width:17px;height:17px;border-radius:50%;
+  display:grid;place-items:center;font-size:.58rem;font-weight:900;margin-top:1px;
+}
+.sig-r li::before{content:"✕";background:rgba(239,68,68,.14);color:var(--red2);border:1px solid rgba(239,68,68,.28)}
+.sig-g li::before{content:"✓";background:rgba(16,185,129,.14);color:var(--green2);border:1px solid rgba(16,185,129,.28)}
 
-  /* ---------- Masthead ---------- */
-  .masthead {
-    border: 1px solid var(--border);
-    background: linear-gradient(180deg, rgba(22, 30, 46, .9), rgba(13, 19, 34, .75));
-    border-radius: var(--radius);
-    padding: clamp(20px, 3vw, 30px);
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-  }
-  .masthead::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--danger) 0%, var(--amber) 35%, var(--blue) 65%, var(--emerald) 100%);
-  }
-  .masthead__top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .brand__mark {
-    flex: none;
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(160deg, rgba(59, 130, 246, .25), rgba(16, 185, 129, .18));
-    border: 1px solid var(--border-2);
-    color: var(--emerald-2);
-  }
-  .brand__mark svg { width: 24px; height: 24px; }
-  .brand__name {
-    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
-    font-weight: 800;
-    letter-spacing: -.02em;
-    color: var(--text);
-    line-height: 1.1;
-  }
-  .brand__kicker {
-    font-family: var(--mono);
-    font-size: .72rem;
-    letter-spacing: .28em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+/* ── PILLARS ── */
+.pillars{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.pillar{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px;box-shadow:var(--sh-sm);transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.pillar:hover{transform:translateY(-3px);box-shadow:var(--sh)}
+.ptop{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.picon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--border2);flex:none}
+.picon svg{width:23px;height:23px}
+.ptitle{font-size:.97rem;font-weight:700;color:var(--text)}
+.pbadge{display:inline-block;font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:2px 7px;border-radius:5px;margin-top:3px}
+.plist{list-style:none;display:flex;flex-direction:column;gap:6px}
+.plist li{font-size:.82rem;padding-left:15px;position:relative;color:var(--body)}
+.plist li::before{content:"›";position:absolute;left:1px;font-weight:700}
+/* pillar colors */
+.p-blue .picon{color:var(--blue2);background:rgba(59,130,246,.1)} .p-blue .plist li::before{color:var(--blue2)} .p-blue:hover{border-color:rgba(59,130,246,.4)}
+.p-blue .pbadge{background:rgba(59,130,246,.1);color:var(--blue2);border:1px solid rgba(59,130,246,.25)}
+.p-green .picon{color:var(--green2);background:rgba(16,185,129,.1)} .p-green .plist li::before{color:var(--green2)} .p-green:hover{border-color:rgba(16,185,129,.4)}
+.p-green .pbadge{background:rgba(16,185,129,.1);color:var(--green2);border:1px solid rgba(16,185,129,.25)}
+.p-red .picon{color:var(--red2);background:rgba(239,68,68,.1)} .p-red .plist li::before{color:var(--red2)} .p-red:hover{border-color:rgba(239,68,68,.4)}
+.p-red .pbadge{background:rgba(239,68,68,.1);color:var(--red2);border:1px solid rgba(239,68,68,.25)}
+.p-purple .picon{color:var(--purple2);background:rgba(139,92,246,.1)} .p-purple .plist li::before{color:var(--purple2)} .p-purple:hover{border-color:rgba(139,92,246,.4)}
+.p-purple .pbadge{background:rgba(139,92,246,.1);color:var(--purple2);border:1px solid rgba(139,92,246,.25)}
+.p-cyan .picon{color:var(--cyan2);background:rgba(6,182,212,.1)} .p-cyan .plist li::before{color:var(--cyan2)} .p-cyan:hover{border-color:rgba(6,182,212,.4)}
+.p-cyan .pbadge{background:rgba(6,182,212,.1);color:var(--cyan2);border:1px solid rgba(6,182,212,.25)}
+.p-amber .picon{color:var(--amber2);background:rgba(245,158,11,.1)} .p-amber .plist li::before{color:var(--amber2)} .p-amber:hover{border-color:rgba(245,158,11,.4)}
+.p-amber .pbadge{background:rgba(245,158,11,.1);color:var(--amber2);border:1px solid rgba(245,158,11,.25)}
 
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--mono);
-    font-size: .74rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--amber-2);
-    background: rgba(245, 158, 11, .08);
-    border: 1px solid rgba(245, 158, 11, .35);
-    padding: 8px 14px;
-    border-radius: var(--radius-pill);
-  }
-  .status__dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--amber);
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, .6);
-    animation: pulse 2.4s infinite;
-  }
-  @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(245, 158, 11, .55); }
-    70%  { box-shadow: 0 0 0 9px rgba(245, 158, 11, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-  }
+/* ── BANK STEPS ── */
+.bsteps{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:15px}
+.bstep{
+  background:var(--card);border:1px solid var(--border);border-top:3px solid var(--green);
+  border-radius:var(--r);padding:18px 20px 16px;position:relative;box-shadow:var(--sh-sm);
+  transition:transform .2s,box-shadow .2s;
+}
+.bstep:hover{transform:translateY(-2px);box-shadow:0 18px 40px -18px rgba(16,185,129,.4)}
+.bstep-n{
+  font-family:var(--mono);font-size:2.4rem;font-weight:900;
+  color:rgba(16,185,129,.13);position:absolute;top:8px;right:14px;line-height:1;
+}
+.bstep-t{font-size:.96rem;font-weight:700;color:var(--text);margin-bottom:5px}
+.bstep-b{font-size:.83rem;color:var(--body)}
+.bstep-b code{
+  font-family:var(--mono);font-size:.8em;color:var(--cyan2);
+  background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);padding:1px 5px;border-radius:5px;
+}
 
-  .masthead__lede {
-    margin-top: 18px;
-    max-width: 74ch;
-    color: var(--body);
-    font-size: clamp(.95rem, 1.4vw, 1.05rem);
-  }
+/* ── TOOL CARDS ── */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:15px}
+.tc{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:17px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--sh-sm);
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.tc:hover{transform:translateY(-2px)}
+.tc-head{display:flex;align-items:center;gap:11px}
+.tc-logo{
+  width:40px;height:40px;border-radius:11px;border:1px solid var(--border2);
+  display:grid;place-items:center;font-size:1.25rem;flex:none;background:var(--card2);
+}
+.tc-name{font-size:.97rem;font-weight:700;color:var(--text)}
+.tc-tag{
+  display:inline-block;font-family:var(--mono);font-size:.6rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:5px;margin-top:2px;
+}
+.tag-free{background:rgba(16,185,129,.1);color:var(--green2);border:1px solid rgba(16,185,129,.22)}
+.tag-paid{background:rgba(139,92,246,.1);color:var(--purple2);border:1px solid rgba(139,92,246,.22)}
+.tag-fm{background:rgba(59,130,246,.1);color:var(--blue2);border:1px solid rgba(59,130,246,.22)}
+.tag-os{background:rgba(245,158,11,.1);color:var(--amber2);border:1px solid rgba(245,158,11,.22)}
+.tc-desc{font-size:.81rem;color:var(--body);flex:1}
+.tc-link{
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  font-size:.78rem;font-weight:650;color:var(--text);padding:7px 12px;border-radius:var(--pill);
+  background:var(--card2);border:1px solid var(--border2);
+  transition:all .17s;width:fit-content;
+}
+.tc-link:hover{background:rgba(16,185,129,.13);border-color:rgba(16,185,129,.45);color:var(--green2);transform:translateX(2px)}
+.tc-blue:hover{border-color:rgba(59,130,246,.4);box-shadow:0 12px 28px -14px rgba(59,130,246,.55)}
+.tc-green:hover{border-color:rgba(16,185,129,.4);box-shadow:0 12px 28px -14px rgba(16,185,129,.55)}
+.tc-purple:hover{border-color:rgba(139,92,246,.4);box-shadow:0 12px 28px -14px rgba(139,92,246,.55)}
+.tc-cyan:hover{border-color:rgba(6,182,212,.4);box-shadow:0 12px 28px -14px rgba(6,182,212,.55)}
+.tc-amber:hover{border-color:rgba(245,158,11,.4);box-shadow:0 12px 28px -14px rgba(245,158,11,.55)}
 
-  /* ---------- Legend ---------- */
-  .legend {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 22px;
-    padding-top: 18px;
-    border-top: 1px dashed var(--border);
-  }
-  .legend__item {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    font-size: .82rem;
-    color: var(--muted);
-  }
-  .legend__swatch {
-    width: 12px;
-    height: 12px;
-    border-radius: 4px;
-  }
-  .legend__swatch--danger { background: var(--danger); box-shadow: 0 0 12px rgba(244, 63, 94, .7); }
-  .legend__swatch--safe   { background: var(--emerald); box-shadow: 0 0 12px rgba(16, 185, 129, .7); }
+/* MFA rank bar */
+.mfa-rank{
+  padding:13px 17px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.18);
+  border-radius:11px;font-size:.83rem;margin-bottom:20px;
+}
+.mfa-rank strong{color:var(--cyan2)}
+.rank-items{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin-top:6px}
+.ri{padding:3px 9px;border-radius:6px;font-size:.75rem;font-weight:700}
+.ri-best{background:rgba(16,185,129,.15);color:var(--green2)}
+.ri-good{background:rgba(59,130,246,.12);color:var(--blue2)}
+.ri-ok{background:rgba(245,158,11,.12);color:var(--amber2)}
+.ri-weak{background:rgba(239,68,68,.12);color:var(--red2)}
+.ri-sep{color:var(--faint);font-size:.9rem}
 
-  /* ============================================================
-     DASHBOARD GRID
-     ============================================================ */
-  .dashboard {
-    margin-top: 30px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-    align-items: start;
-  }
-  @media (max-width: 940px) {
-    .dashboard { grid-template-columns: 1fr; gap: 22px; }
-  }
+/* 2FA setup block */
+.setup-block{
+  margin-top:20px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px;
+}
+.setup-block h4{color:var(--cyan2);font-size:.88rem;font-weight:700;margin-bottom:12px}
+.setup-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.setup-item .si-title{font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.setup-item .si-path{font-size:.78rem;color:var(--body)}
+.setup-item .si-path code{font-family:var(--mono);font-size:.78em;color:var(--cyan2);background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.18);padding:1px 4px;border-radius:4px}
 
-  .column { min-width: 0; }
+/* ── DIRECTORY ── */
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:18px}
+.dcat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-sm)}
+.dcat-h{
+  padding:11px 16px;font-size:.78rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;display:flex;align-items:center;gap:8px;
+}
+.dcat-h svg{width:15px;height:15px;flex:none}
+.dcat-b{padding:4px 8px 10px}
+.ditem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px;border-radius:8px;transition:background .14s}
+.ditem:hover{background:var(--card2)}
+.ditem-l{}
+.di-name{font-size:.84rem;font-weight:600;color:var(--text)}
+.di-note{font-size:.74rem;color:var(--muted);margin-top:1px}
+.di-link{
+  flex:none;display:inline-flex;align-items:center;gap:4px;text-decoration:none;
+  font-size:.71rem;font-weight:650;padding:4px 10px;border-radius:var(--pill);
+  border:1px solid var(--border2);color:var(--muted);white-space:nowrap;
+  transition:all .14s;
+}
+.di-link:hover{color:var(--text);background:var(--card2);border-color:var(--border2)}
+.dh-blue{background:rgba(59,130,246,.1);color:var(--blue2)}
+.dh-green{background:rgba(16,185,129,.1);color:var(--green2)}
+.dh-purple{background:rgba(139,92,246,.1);color:var(--purple2)}
+.dh-amber{background:rgba(245,158,11,.1);color:var(--amber2)}
+.dh-red{background:rgba(239,68,68,.1);color:var(--red2)}
+.dh-cyan{background:rgba(6,182,212,.1);color:var(--cyan2)}
 
-  /* ---------- Column header ---------- */
-  .column__header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 18px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--bg-elev);
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .column__header::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 5px;
-  }
-  .column--threats .column__header::before { background: linear-gradient(180deg, var(--danger), var(--amber)); }
-  .column--defense .column__header::before { background: linear-gradient(180deg, var(--blue), var(--emerald)); }
+/* ── FOOTER ── */
+.footer{
+  margin-top:56px;padding-top:22px;border-top:1px solid var(--border);
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;
+  font-size:.79rem;color:var(--muted);
+}
+.footer a{color:var(--muted);text-decoration:underline}
+.footer a:hover{color:var(--body)}
+.ft-mono{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
 
-  .column__icon {
-    flex: none;
-    width: 40px; height: 40px;
-    border-radius: 11px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--border-2);
-  }
-  .column--threats .column__icon { color: var(--danger-2); background: rgba(244, 63, 94, .1); }
-  .column--defense .column__icon { color: var(--emerald-2); background: rgba(16, 185, 129, .1); }
-  .column__icon svg { width: 22px; height: 22px; }
-
-  .column__title {
-    font-size: clamp(1.05rem, 1.8vw, 1.28rem);
-    font-weight: 800;
-    letter-spacing: -.01em;
-    color: var(--text);
-    line-height: 1.15;
-  }
-  .column__sub {
-    display: block;
-    font-family: var(--mono);
-    font-size: .68rem;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-  .column--threats .column__sub { color: var(--danger-2); }
-  .column--defense .column__sub { color: var(--emerald-2); }
-
-  /* ============================================================
-     CARDS
-     ============================================================ */
-  .stack { display: flex; flex-direction: column; gap: 20px; }
-
-  .card {
-    position: relative;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 22px 22px 20px;
-    box-shadow: var(--shadow-sm);
-    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-  }
-  .card::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 18px; bottom: 18px;
-    width: 3px;
-    border-radius: 3px;
-    transition: box-shadow .25s ease, top .25s ease, bottom .25s ease;
-  }
-  .card--threat::before  { background: var(--danger); }
-  .card--defense::before { background: var(--emerald); }
-
-  .card:hover { transform: translateY(-3px); }
-  .card--threat:hover {
-    border-color: rgba(244, 63, 94, .55);
-    box-shadow: 0 22px 44px -22px rgba(244, 63, 94, .55);
-  }
-  .card--threat:hover::before { top: 10px; bottom: 10px; box-shadow: 0 0 16px 1px rgba(244, 63, 94, .8); }
-  .card--defense:hover {
-    border-color: rgba(16, 185, 129, .55);
-    box-shadow: 0 22px 44px -22px rgba(16, 185, 129, .5);
-  }
-  .card--defense:hover::before { top: 10px; bottom: 10px; box-shadow: 0 0 16px 1px rgba(16, 185, 129, .8); }
-
-  /* ---------- Card head ---------- */
-  .card__head {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 14px;
-  }
-  .card__icon {
-    flex: none;
-    width: 42px; height: 42px;
-    border-radius: 11px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--border-2);
-  }
-  .card__icon svg { width: 22px; height: 22px; }
-  .card--threat .card__icon  { color: var(--danger-2);  background: rgba(244, 63, 94, .1); }
-  .card--defense .card__icon { color: var(--emerald-2); background: rgba(16, 185, 129, .1); }
-
-  .card__heading { flex: 1; min-width: 0; }
-  .card__title {
-    font-size: 1.12rem;
-    font-weight: 750;
-    color: var(--text);
-    letter-spacing: -.01em;
-    line-height: 1.25;
-  }
-  .card__title .nuance {
-    display: block;
-    font-size: .82rem;
-    font-weight: 500;
-    color: var(--muted);
-    letter-spacing: 0;
-    margin-top: 1px;
-  }
-
-  /* ---------- Badges ---------- */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 9px;
-    font-family: var(--mono);
-    font-size: .66rem;
-    font-weight: 600;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: 5px 10px;
-    border-radius: var(--radius-pill);
-    border: 1px solid transparent;
-  }
-  .badge::before {
-    content: "";
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-  }
-  .badge--critical { color: var(--danger-2);  background: rgba(244, 63, 94, .1);  border-color: rgba(244, 63, 94, .3); }
-  .badge--high     { color: var(--amber-2);   background: rgba(245, 158, 11, .1); border-color: rgba(245, 158, 11, .3); }
-  .badge--layer    { color: var(--emerald-2); background: rgba(16, 185, 129, .1); border-color: rgba(16, 185, 129, .3); }
-
-  /* ---------- Card body ---------- */
-  .card__body {
-    color: var(--body);
-    font-size: .94rem;
-    margin-bottom: 16px;
-  }
-
-  /* ---------- Threat vector list ---------- */
-  .vectors {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-  }
-  .vectors li {
-    position: relative;
-    padding-left: 26px;
-    font-size: .9rem;
-    color: var(--body);
-  }
-  .vectors li::before {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: .55em;
-    width: 8px; height: 8px;
-    transform: rotate(45deg);
-    background: var(--danger);
-    border-radius: 2px;
-    box-shadow: 0 0 8px rgba(244, 63, 94, .6);
-  }
-  .vectors li strong { color: var(--text); font-weight: 650; }
-
-  /* ---------- Card footer tags ---------- */
-  .card__footer {
-    margin-top: 18px;
-    padding-top: 15px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .card__footer-label {
-    font-family: var(--mono);
-    font-size: .64rem;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: var(--faint);
-    margin-right: 2px;
-  }
-  .tag {
-    font-family: var(--mono);
-    font-size: .68rem;
-    font-weight: 600;
-    letter-spacing: .04em;
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-    color: var(--danger-2);
-    background: rgba(244, 63, 94, .08);
-    border: 1px solid rgba(244, 63, 94, .25);
-  }
-
-  /* ============================================================
-     DEFENSE STEPS
-     ============================================================ */
-  .steps {
-    list-style: none;
-    counter-reset: step;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .step {
-    position: relative;
-    display: flex;
-    gap: 14px;
-    padding: 6px 0 18px;
-  }
-  /* connector line between steps */
-  .step:not(:last-child)::before {
-    content: "";
-    position: absolute;
-    left: 15px;
-    top: 36px;
-    bottom: 2px;
-    width: 2px;
-    background: linear-gradient(180deg, rgba(16, 185, 129, .5), rgba(16, 185, 129, .05));
-  }
-  .step__num {
-    flex: none;
-    position: relative;
-    z-index: 1;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: .82rem;
-    color: var(--emerald-2);
-    background: rgba(16, 185, 129, .12);
-    border: 1px solid rgba(16, 185, 129, .45);
-  }
-  .step__body { flex: 1; min-width: 0; padding-top: 2px; }
-  .step__title {
-    font-size: .98rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 3px;
-    letter-spacing: -.005em;
-  }
-  .step__text {
-    font-size: .9rem;
-    color: var(--body);
-  }
-  .step__text code {
-    font-family: var(--mono);
-    font-size: .82em;
-    color: var(--cyan);
-    background: rgba(34, 211, 238, .08);
-    border: 1px solid rgba(34, 211, 238, .2);
-    padding: 1px 6px;
-    border-radius: 6px;
-    white-space: nowrap;
-  }
-
-  /* ---------- Tool link bar ---------- */
-  .toolbar {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-  .toolbar__label {
-    display: block;
-    font-family: var(--mono);
-    font-size: .64rem;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--faint);
-    margin-bottom: 10px;
-  }
-  .pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-  }
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    font-size: .84rem;
-    font-weight: 650;
-    color: var(--text);
-    padding: 8px 14px;
-    border-radius: var(--radius-pill);
-    background: linear-gradient(180deg, var(--card-2), #18213360);
-    border: 1px solid var(--border-2);
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
-  }
-  .pill__icon {
-    flex: none;
-    width: 16px; height: 16px;
-    opacity: .85;
-    transition: transform .18s ease;
-  }
-  .pill__icon svg { width: 16px; height: 16px; display: block; }
-  .pill:hover {
-    transform: translateY(-2px);
-    color: #fff;
-    border-color: rgba(52, 211, 153, .65);
-    background: linear-gradient(180deg, rgba(16, 185, 129, .18), rgba(59, 130, 246, .12));
-    box-shadow: 0 12px 26px -14px rgba(16, 185, 129, .85);
-  }
-  .pill:hover .pill__icon { transform: translateX(2px); }
-  .pill:focus-visible {
-    outline: 2px solid var(--emerald-2);
-    outline-offset: 2px;
-  }
-  /* official / gov pills get a distinct cyan treatment */
-  .pill--gov:hover {
-    border-color: rgba(34, 211, 238, .65);
-    box-shadow: 0 12px 26px -14px rgba(34, 211, 238, .8);
-    background: linear-gradient(180deg, rgba(34, 211, 238, .16), rgba(59, 130, 246, .12));
-  }
-
-  /* ============================================================
-     FOOTER
-     ============================================================ */
-  .site-footer {
-    margin-top: 42px;
-    padding-top: 26px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    color: var(--muted);
-    font-size: .82rem;
-  }
-  .site-footer p { max-width: 70ch; }
-  .site-footer strong { color: var(--body); }
-  .footer-meta {
-    font-family: var(--mono);
-    font-size: .68rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--faint);
-    white-space: nowrap;
-  }
-
-  /* ============================================================
-     ACCESSIBILITY
-     ============================================================ */
-  .visually-hidden {
-    position: absolute !important;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0);
-    white-space: nowrap; border: 0;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-  }
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:560px){
+  .bsteps,.tgrid,.dir-grid{grid-template-columns:1fr}
+  .mfa-grid{grid-template-columns:1fr}
+  .fsplit{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-  <div class="shell">
+<div class="page">
 
-    <!-- ============================ MASTHEAD ============================ -->
-    <header class="masthead">
-      <div class="masthead__top">
-        <div class="brand">
-          <span class="brand__mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
-          </span>
-          <div>
-            <span class="brand__kicker">Personal OPSEC · v2026.1</span>
-            <h1 class="brand__name">Digital Asset Defense Console</h1>
-          </div>
-        </div>
-        <span class="status">
-          <span class="status__dot" aria-hidden="true"></span>
-          Threat Level: Elevated
-        </span>
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <div class="hdr-kicker">Personal OPSEC · 2026 Edition</div>
+      <h1 class="hdr-title">Your Personal<br><span>Digital Security</span> Blueprint</h1>
+      <p class="hdr-sub">A visual, operational guide to protecting your identity, money, devices, and data — with every tool, step, and link you need to act today.</p>
+      <div class="hdr-stats">
+        <span class="stat"><span class="dot dot-r"></span> Identity theft hits <strong>~15 M Americans / yr</strong></span>
+        <span class="stat"><span class="dot dot-a"></span> Avg loss per victim: <strong>$1,500+</strong></span>
+        <span class="stat"><span class="dot dot-g"></span> Most breaches are <strong>100 % preventable</strong></span>
       </div>
-
-      <p class="masthead__lede">
-        A two-column command center for your digital life. The left panel maps the
-        <strong>entry points</strong> modern fraudsters exploit to breach accounts, drain funds, and impersonate
-        identities. The right panel is your <strong>tactical defensive manual</strong> — exact, step-by-step
-        controls and vetted tools that harden every layer before an attacker reaches it.
-      </p>
-
-      <div class="legend" aria-hidden="true">
-        <span class="legend__item"><span class="legend__swatch legend__swatch--danger"></span> Threat vector — how the breach happens</span>
-        <span class="legend__item"><span class="legend__swatch legend__swatch--safe"></span> Defensive control — how you lock it down</span>
+    </div>
+    <div class="hdr-score">
+      <div class="score-ring">
+        <div class="score-inner">
+          <span class="score-num">?</span>
+        </div>
       </div>
-    </header>
+      <div class="score-label">Your Security Score</div>
+      <div class="score-sub">Complete all 6 layers →</div>
+    </div>
+  </div>
+</header>
 
-    <!-- ============================ DASHBOARD ============================ -->
-    <main class="dashboard">
+<!-- ══════════════ SECURITY MAP ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-blue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3m10-10h-3M5 12H2m14.2-7.2-2.1 2.1M9.9 16.9l-2.1 2.1M19.2 16.8l-2.1-2.1M9.9 7.1 7.8 5"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">The Security Ecosystem</div>
+      <div class="sh-sub sb-blue">Six domains — one complete picture</div>
+    </div>
+  </div>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 920 530" xmlns="http://www.w3.org/2000/svg" aria-label="Security ecosystem hub-and-spoke diagram showing six protection domains">
+      <defs>
+        <radialGradient id="bg-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0e1826"/><stop offset="100%" stop-color="#080c14"/></radialGradient>
+        <radialGradient id="hub-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a2e50"/><stop offset="100%" stop-color="#0e1c34"/></radialGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <pattern id="dots" width="38" height="38" patternUnits="userSpaceOnUse"><circle cx="19" cy="19" r=".9" fill="rgba(255,255,255,.045)"/></pattern>
+      </defs>
+      <rect width="920" height="530" fill="url(#bg-g)" rx="13"/>
+      <rect width="920" height="530" fill="url(#dots)" rx="13"/>
 
-      <!-- ======================================================== -->
-      <!-- LEFT COLUMN — THREAT VECTORS                             -->
-      <!-- ======================================================== -->
-      <section class="column column--threats" aria-labelledby="threats-title">
-        <div class="column__header">
-          <span class="column__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </span>
+      <!-- spokes: center 460,265 → each satellite (r≈195) -->
+      <!-- top 460,70 · tr 629,168 · br 629,362 · bot 460,460 · bl 291,362 · tl 291,168 -->
+      <line x1="460" y1="243" x2="460" y2="105" stroke="rgba(59,130,246,.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="479" y1="251" x2="613" y2="178" stroke="rgba(16,185,129,.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="479" y1="279" x2="613" y2="352" stroke="rgba(139,92,246,.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="460" y1="287" x2="460" y2="425" stroke="rgba(245,158,11,.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="441" y1="279" x2="307" y2="352" stroke="rgba(6,182,212,.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="441" y1="251" x2="307" y2="178" stroke="rgba(239,68,68,.4)" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+      <!-- hub -->
+      <circle cx="460" cy="265" r="72" fill="url(#hub-g)" stroke="rgba(59,130,246,.5)" stroke-width="1.5" filter="url(#glow)"/>
+      <circle cx="460" cy="265" r="58" fill="none" stroke="rgba(59,130,246,.18)" stroke-width="1" stroke-dasharray="3,7"/>
+      <path d="M460 235l20 9v17c0 11-8 21-20 26-12-5-20-15-20-26v-17z" fill="none" stroke="rgba(96,165,250,.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M453 262l5 5 9-11" stroke="#60a5fa" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <text x="460" y="297" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="800" font-size="10.5" fill="#e8edf7" letter-spacing=".5">YOUR DIGITAL</text>
+      <text x="460" y="311" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="800" font-size="10.5" fill="#e8edf7" letter-spacing=".5">SECURITY</text>
+
+      <!-- node helper macro — repeated manually -->
+      <!-- NODE 1: Passwords (top) -->
+      <rect x="372" y="28" width="176" height="72" rx="11" fill="#101e36" stroke="rgba(59,130,246,.55)" stroke-width="1.4"/>
+      <rect x="372" y="28" width="176" height="3.5" rx="2" fill="rgba(59,130,246,.75)"/>
+      <text x="460" y="48" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="11.5" fill="#e8edf7">Passwords &amp; Identity</text>
+      <text x="460" y="66" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Password Manager · Passkeys</text>
+      <text x="460" y="80" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Hardware Key · Unique per site</text>
+
+      <!-- NODE 2: Banking (tr) -->
+      <rect x="620" y="126" width="172" height="72" rx="11" fill="#101e36" stroke="rgba(16,185,129,.55)" stroke-width="1.4"/>
+      <rect x="620" y="126" width="172" height="3.5" rx="2" fill="rgba(16,185,129,.75)"/>
+      <text x="706" y="146" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="11.5" fill="#e8edf7">Banking &amp; Finance</text>
+      <text x="706" y="164" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Alerts · Credit Freeze · MFA</text>
+      <text x="706" y="178" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Virtual cards · Low limits</text>
+
+      <!-- NODE 3: Devices (br) -->
+      <rect x="620" y="322" width="172" height="72" rx="11" fill="#101e36" stroke="rgba(139,92,246,.55)" stroke-width="1.4"/>
+      <rect x="620" y="322" width="172" height="3.5" rx="2" fill="rgba(139,92,246,.75)"/>
+      <text x="706" y="342" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="11.5" fill="#e8edf7">Devices &amp; Apps</text>
+      <text x="706" y="360" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Auto-update · Screen lock · VPN</text>
+      <text x="706" y="374" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">App permissions review</text>
+
+      <!-- NODE 4: Monitoring (bottom) -->
+      <rect x="372" y="428" width="176" height="72" rx="11" fill="#101e36" stroke="rgba(245,158,11,.55)" stroke-width="1.4"/>
+      <rect x="372" y="428" width="176" height="3.5" rx="2" fill="rgba(245,158,11,.75)"/>
+      <text x="460" y="448" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="11.5" fill="#e8edf7">Monitoring &amp; Alerts</text>
+      <text x="460" y="466" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Credit watch · Breach alerts</text>
+      <text x="460" y="480" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">HaveIBeenPwned · Dark web</text>
+
+      <!-- NODE 5: Data (bl) -->
+      <rect x="128" y="322" width="172" height="72" rx="11" fill="#101e36" stroke="rgba(6,182,212,.55)" stroke-width="1.4"/>
+      <rect x="128" y="322" width="172" height="3.5" rx="2" fill="rgba(6,182,212,.75)"/>
+      <text x="214" y="342" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="11.5" fill="#e8edf7">Data &amp; Backups</text>
+      <text x="214" y="360" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">E2EE cloud · Offline backup</text>
+      <text x="214" y="374" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Encrypt drives · Secure delete</text>
+
+      <!-- NODE 6: Comms (tl) -->
+      <rect x="128" y="126" width="172" height="72" rx="11" fill="#101e36" stroke="rgba(239,68,68,.55)" stroke-width="1.4"/>
+      <rect x="128" y="126" width="172" height="3.5" rx="2" fill="rgba(239,68,68,.75)"/>
+      <text x="214" y="146" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" font-size="11.5" fill="#e8edf7">Communications</text>
+      <text x="214" y="164" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">SIM lock · Port-out PIN</text>
+      <text x="214" y="178" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9.5" fill="#607898">Call filter · E2EE messaging</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════════ DON'T PANIC ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-amber">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">Don't Panic — Suspicious Call &amp; Message Guide</div>
+      <div class="sh-sub sb-amber">What to do the moment someone unexpected contacts you</div>
+    </div>
+  </div>
+  <div class="panic-grid">
+    <!-- flowchart -->
+    <div class="flow-card">
+      <h3><em>DECISION FLOW</em> Unexpected call / text / email arrives</h3>
+      <div class="flow">
+        <div class="fn fn-start">📞 &nbsp;Unexpected Contact Received</div>
+        <div class="farrow"></div>
+        <div class="fn fn-q">Are they creating urgency, fear, or pressure to act now?</div>
+        <div class="farrow"></div>
+        <div class="fsplit">
           <div>
-            <h2 class="column__title" id="threats-title">Threat Vectors</h2>
-            <span class="column__sub">Fraud Entry Points</span>
+            <div class="flabel">YES →</div>
+            <div class="fn fn-danger">🔴 STOP<br>Hang up / close immediately.<br>Do not share any info.</div>
+            <div class="farrow"></div>
+            <div class="fn fn-safe">Look up the organisation's official number yourself (back of card / official website). Call them back directly.</div>
+          </div>
+          <div>
+            <div class="flabel">NO →</div>
+            <div class="fn fn-q" style="font-size:.8rem">Do they claim to be someone you know?</div>
+            <div class="farrow"></div>
+            <div class="fsplit">
+              <div>
+                <div class="flabel">YES</div>
+                <div class="fn fn-safe" style="font-size:.76rem">Hang up. Call them back on a number you already have saved.</div>
+              </div>
+              <div>
+                <div class="flabel">NO</div>
+                <div class="fn fn-safe" style="font-size:.76rem">Let voicemail screen it. Never click links in unknown texts.</div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="flow-rule"><strong>Golden rule:</strong> Legitimate banks, the IRS, SSA, Apple, Google, and Microsoft will <em>never</em> ask for your password, PIN, gift card codes, wire transfers, or remote access over the phone.</div>
+    </div>
 
-        <div class="stack">
+    <!-- signals -->
+    <div class="signals-col">
+      <div class="sig-card" style="border-top:3px solid var(--red)">
+        <h3 style="color:var(--red2)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Red Flags — Hang Up Immediately
+        </h3>
+        <ul class="sig-list sig-r">
+          <li>Threatening arrest, account closure, or legal action unless you act <em>right now</em></li>
+          <li>Asking for gift card numbers, wire transfer, or crypto to "resolve" an issue</li>
+          <li>Requesting remote access to your computer or phone ("tech support")</li>
+          <li>Claiming to know your partial SSN and asking you to "confirm" the rest</li>
+          <li>Telling you not to tell your family or bank about the call</li>
+          <li>Caller ID looks legitimate — it's easily spoofed; do not trust it</li>
+          <li>Sending a link via text and demanding you click it immediately</li>
+          <li>Claiming to be Amazon, Apple, Microsoft, IRS, or Social Security Administration</li>
+        </ul>
+      </div>
+      <div class="sig-card" style="border-top:3px solid var(--green)">
+        <h3 style="color:var(--green2)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          Safe Signals — Probably Legitimate
+        </h3>
+        <ul class="sig-list sig-g">
+          <li>They don't ask for passwords, PINs, or full SSN over the phone</li>
+          <li>They encourage you to call back on a number you find yourself</li>
+          <li>No urgency — they say you can take your time or call at your convenience</li>
+          <li>Communication arrives via secure in-app message or official email domain</li>
+          <li>They never ask you to move money to "protect" it</li>
+        </ul>
+      </div>
+      <div class="sig-card" style="border-top:3px solid var(--amber)">
+        <h3 style="color:var(--amber2)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Common Scam Scenarios
+        </h3>
+        <ul class="sig-list sig-r">
+          <li><strong>Grandparent scam:</strong> AI-cloned voice of a family member — "in trouble, send money now"</li>
+          <li><strong>Bank fraud alert:</strong> "Suspicious charges — verify your card number to confirm it's you"</li>
+          <li><strong>IRS / SSA:</strong> Government agencies never call demanding immediate payment</li>
+          <li><strong>Utility shutoff:</strong> "Pay with gift cards or your power is cut today"</li>
+          <li><strong>Prize / lottery:</strong> You won! Just pay the processing fee first</li>
+          <li><strong>Quishing:</strong> QR code in a text, email, or pasted over a sign — destination hidden</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <!-- THREAT 1 — Phishing & AiTM -->
-          <article class="card card--threat">
-            <div class="card__head">
-              <span class="card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 12c3-5 7-7 9-7s6 2 9 7c-3 5-7 7-9 7" />
-                  <path d="M21 12c-3 5-7 7-9 7" />
-                  <circle cx="12" cy="12" r="3" />
-                  <line x1="3" y1="3" x2="21" y2="21" />
-                </svg>
-              </span>
-              <div class="card__heading">
-                <h3 class="card__title">
-                  Phishing &amp; AiTM
-                  <span class="nuance">Adversary-in-the-Middle session theft</span>
-                </h3>
-                <span class="badge badge--critical">Critical · Session Hijack</span>
-              </div>
-            </div>
+<!-- ══════════════ SIX PILLARS ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">The Six Security Pillars</div>
+      <div class="sh-sub sb-green">Every area you must lock down — key actions per layer</div>
+    </div>
+  </div>
+  <div class="pillars">
+    <div class="pillar p-blue">
+      <div class="ptop">
+        <span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="5"/><path d="M11.5 11.5 21 2"/><path d="M16.5 6.5 19 9"/><path d="M13.5 9.5 16 12"/></svg></span>
+        <div><div class="ptitle">Passwords &amp; Identity</div><span class="pbadge">Layer 1</span></div>
+      </div>
+      <ul class="plist">
+        <li>Use a dedicated password manager — not your browser</li>
+        <li>Generate a unique 16+ char random password per account</li>
+        <li>Write master password on paper and store in a physical safe</li>
+        <li>Enable Passkeys on Google / Apple ID for phishing resistance</li>
+        <li>Register a FIDO2 hardware key (+ backup key stored separately)</li>
+      </ul>
+    </div>
+    <div class="pillar p-green">
+      <div class="ptop">
+        <span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="12" x2="12" y2="8.5"/></svg></span>
+        <div><div class="ptitle">Banking &amp; Finance</div><span class="pbadge">Layer 2</span></div>
+      </div>
+      <ul class="plist">
+        <li>Freeze credit at Equifax, Experian, and TransUnion — free</li>
+        <li>Enable real-time transaction alerts for every purchase</li>
+        <li>Use virtual card numbers for online shopping</li>
+        <li>Set low daily wire / Zelle transfer limits</li>
+        <li>Enable the strongest available MFA on every financial account</li>
+      </ul>
+    </div>
+    <div class="pillar p-red">
+      <div class="ptop">
+        <span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
+        <div><div class="ptitle">Communications</div><span class="pbadge">Layer 3</span></div>
+      </div>
+      <ul class="plist">
+        <li>Call carrier: add port-out lock, SIM PIN, and verbal passphrase</li>
+        <li>Enable "Silence Unknown Callers" in iOS / Android settings</li>
+        <li>Use a call-blocking app (RoboKiller, Hiya, Nomorobo)</li>
+        <li>Never click links in unexpected texts — go directly to the app</li>
+        <li>Use E2EE messaging (Signal) for sensitive conversations</li>
+      </ul>
+    </div>
+    <div class="pillar p-purple">
+      <div class="ptop">
+        <span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+        <div><div class="ptitle">Devices &amp; Apps</div><span class="pbadge">Layer 4</span></div>
+      </div>
+      <ul class="plist">
+        <li>Auto-updates enabled for OS and all apps at all times</li>
+        <li>Strong biometric + 6-digit PIN screen lock, auto-lock ≤ 1 min</li>
+        <li>Install apps from official stores only; delete unused apps</li>
+        <li>Review app permissions quarterly — revoke camera/mic/location if unused</li>
+        <li>Use a VPN on any public Wi-Fi network</li>
+      </ul>
+    </div>
+    <div class="pillar p-cyan">
+      <div class="ptop">
+        <span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+        <div><div class="ptitle">Data &amp; Backups</div><span class="pbadge">Layer 5</span></div>
+      </div>
+      <ul class="plist">
+        <li>Enable Advanced Data Protection on iPhone (E2EE iCloud)</li>
+        <li>Offline backup to an encrypted external drive monthly</li>
+        <li>3-2-1 rule: 3 copies, 2 media types, 1 offsite</li>
+        <li>Enable FileVault (Mac) or BitLocker (Windows) full-disk encryption</li>
+        <li>Cross-cut shred all physical mail with account / SSN info</li>
+      </ul>
+    </div>
+    <div class="pillar p-amber">
+      <div class="ptop">
+        <span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <div><div class="ptitle">Monitoring &amp; Alerts</div><span class="pbadge">Layer 6</span></div>
+      </div>
+      <ul class="plist">
+        <li>Check HaveIBeenPwned monthly; enable email breach notifications</li>
+        <li>Set up Google / Apple dark web email monitoring</li>
+        <li>Pull free annual credit report from each bureau via AnnualCreditReport.com</li>
+        <li>Set Google Alerts on your name + last 4 of SSN</li>
+        <li>Review all account activity weekly — dispute charges within 60 days</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-            <p class="card__body">
-              Modern phishing has outgrown the clumsy email that begs for your password. Adversary-in-the-Middle (AiTM)
-              kits deploy a <strong style="color:var(--text)">reverse proxy</strong> that sits invisibly between you and
-              the genuine login portal. The page you see <em>is</em> the real one — relayed live — so every field, logo,
-              and security prompt looks perfectly authentic.
-            </p>
+<!-- ══════════════ BANK SECURITY ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">Bank &amp; Financial Account Security</div>
+      <div class="sh-sub sb-green">Eight steps to lock down your money</div>
+    </div>
+  </div>
+  <div class="bsteps">
+    <div class="bstep"><div class="bstep-n">01</div><div class="bstep-t">Freeze All Three Credit Bureaus</div><div class="bstep-b">Place a free security freeze at <strong>Equifax</strong>, <strong>Experian</strong>, and <strong>TransUnion</strong> individually — all three must be done separately. Blocks new lines of credit from being opened. Unfreeze temporarily when you need new credit.</div></div>
+    <div class="bstep"><div class="bstep-n">02</div><div class="bstep-t">Enable Every Transaction Alert</div><div class="bstep-b">Set SMS + email alerts for every transaction, not just large ones. A fraudster often tests with a $0.99 charge before a large one. <code>Bank App → Settings → Alerts → All Transactions</code></div></div>
+    <div class="bstep"><div class="bstep-n">03</div><div class="bstep-t">Use Authenticator App MFA (Not SMS)</div><div class="bstep-b">SMS one-time codes are defeated by SIM swapping. Where your bank supports it, switch to an authenticator app (Authy, Google Authenticator) or a FIDO2 hardware key — the strongest available option.</div></div>
+    <div class="bstep"><div class="bstep-n">04</div><div class="bstep-t">Set Low Daily Transfer Limits</div><div class="bstep-b">Reduce your Zelle, wire transfer, and bill pay limits to your realistic daily maximum. An attacker who gets in can only move that amount. Raise limits in-app or by calling the bank for large one-off transfers.</div></div>
+    <div class="bstep"><div class="bstep-n">05</div><div class="bstep-t">Use Virtual Card Numbers Online</div><div class="bstep-b">Privacy.com (US) generates single-use or merchant-locked virtual card numbers. Your real card number never touches an external site. Many banks also offer this natively under "Manage Card" settings.</div></div>
+    <div class="bstep"><div class="bstep-n">06</div><div class="bstep-t">Never Trust an Inbound "Bank" Call</div><div class="bstep-b">Hang up. Look at the back of your card or the bank's official website and call that number. Banks never ask for full card numbers, PINs, or OTP codes over an inbound call — that is always fraud.</div></div>
+    <div class="bstep"><div class="bstep-n">07</div><div class="bstep-t">Dedicate a Separate Email for Finance</div><div class="bstep-b">Create an email address used <em>only</em> for bank and financial accounts — never for newsletters, social media, or purchases. Reduces spearphishing risk significantly since the address is not publicly linked to your identity.</div></div>
+    <div class="bstep"><div class="bstep-n">08</div><div class="bstep-t">Review Statements Weekly</div><div class="bstep-b">US law (Regulation E / FDIC) protects you if you dispute unauthorized charges within 60 days. Weekly reviews take under 2 minutes in your bank's app. Flag anything unrecognised — even tiny amounts.</div></div>
+  </div>
+</section>
 
-            <ul class="vectors">
-              <li><strong>Live relay:</strong> your username, password, and MFA code pass straight through to the legitimate server the instant you type them.</li>
-              <li><strong>The cookie is the prize:</strong> once you clear MFA, the server issues a session token — the proxy silently copies it before it ever reaches your browser.</li>
-              <li><strong>Push &amp; SMS are defeated:</strong> because <em>you</em> genuinely approved the login, push notifications and one-time SMS codes offer zero protection.</li>
-              <li><strong>Replay:</strong> the stolen cookie is imported into the attacker's browser, granting a fully authenticated session without ever needing your password again.</li>
-            </ul>
+<!-- ══════════════ PASSWORD MANAGERS ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-purple">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="5"/><path d="M11.5 11.5 21 2"/><path d="M16.5 6.5 19 9"/><path d="M13.5 9.5 16 12"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">Password Managers</div>
+      <div class="sh-sub sb-purple">Ditch browser-saved passwords — use a dedicated vault</div>
+    </div>
+  </div>
+  <div class="tgrid">
+    <div class="tc tc-blue">
+      <div class="tc-head"><div class="tc-logo">🔐</div><div><div class="tc-name">Bitwarden</div><span class="tc-tag tag-free">Free · Open Source</span></div></div>
+      <div class="tc-desc">The gold-standard free option. Open-source, independently audited, cross-platform, and self-hostable. Best choice for most people who want full transparency at no cost.</div>
+      <a class="tc-link" href="https://bitwarden.com" target="_blank" rel="noopener">bitwarden.com ↗</a>
+    </div>
+    <div class="tc tc-purple">
+      <div class="tc-head"><div class="tc-logo">🗝️</div><div><div class="tc-name">1Password</div><span class="tc-tag tag-paid">Paid · $3/mo</span></div></div>
+      <div class="tc-desc">Premium UX, Travel Mode (hides vaults at borders), family sharing, Watchtower breach alerts, and deep OS integration. Top pick for families and teams.</div>
+      <a class="tc-link" href="https://1password.com" target="_blank" rel="noopener">1password.com ↗</a>
+    </div>
+    <div class="tc tc-blue">
+      <div class="tc-head"><div class="tc-logo">🛡️</div><div><div class="tc-name">Dashlane</div><span class="tc-tag tag-fm">Freemium</span></div></div>
+      <div class="tc-desc">Built-in VPN on paid plans and real-time dark web monitoring. Excellent guided setup for beginners. Clean, modern interface.</div>
+      <a class="tc-link" href="https://www.dashlane.com" target="_blank" rel="noopener">dashlane.com ↗</a>
+    </div>
+    <div class="tc tc-cyan">
+      <div class="tc-head"><div class="tc-logo">🔒</div><div><div class="tc-name">Keeper</div><span class="tc-tag tag-paid">Paid · $3/mo</span></div></div>
+      <div class="tc-desc">Zero-knowledge, FIPS 140-2 certified encryption. Strong compliance posture — popular with businesses. Excellent family sharing and secure file storage.</div>
+      <a class="tc-link" href="https://www.keepersecurity.com" target="_blank" rel="noopener">keepersecurity.com ↗</a>
+    </div>
+    <div class="tc tc-blue">
+      <div class="tc-head"><div class="tc-logo">🔑</div><div><div class="tc-name">NordPass</div><span class="tc-tag tag-fm">Freemium</span></div></div>
+      <div class="tc-desc">Uses modern XChaCha20 encryption (not AES). Made by NordVPN team. Simple, clean, and includes data breach scanning on premium plans.</div>
+      <a class="tc-link" href="https://nordpass.com" target="_blank" rel="noopener">nordpass.com ↗</a>
+    </div>
+  </div>
+</section>
 
-            <div class="card__footer">
-              <span class="card__footer-label">Bypasses</span>
-              <span class="tag">SMS OTP</span>
-              <span class="tag">Push Approval</span>
-              <span class="tag">TOTP Apps</span>
-            </div>
-          </article>
+<!-- ══════════════ MFA / 2FA ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-cyan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/><path d="M9 7h6"/><path d="M9 11h6"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">MFA &amp; 2FA Tools</div>
+      <div class="sh-sub sb-cyan">Authenticator apps, hardware keys, and setup paths</div>
+    </div>
+  </div>
 
-          <!-- THREAT 2 — AI Voice Cloning & Deepfakes -->
-          <article class="card card--threat">
-            <div class="card__head">
-              <span class="card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="2" width="6" height="12" rx="3" />
-                  <path d="M5 10a7 7 0 0 0 14 0" />
-                  <line x1="12" y1="19" x2="12" y2="22" />
-                  <line x1="8" y1="22" x2="16" y2="22" />
-                </svg>
-              </span>
-              <div class="card__heading">
-                <h3 class="card__title">
-                  AI Voice Cloning &amp; Deepfakes
-                  <span class="nuance">Synthetic identity from 3 seconds of audio</span>
-                </h3>
-                <span class="badge badge--critical">Critical · Impersonation</span>
-              </div>
-            </div>
+  <div class="mfa-rank">
+    <strong>MFA Strength Ranking</strong> — best to weakest:
+    <div class="rank-items">
+      <span class="ri ri-best">FIDO2 Hardware Key</span><span class="ri-sep">›</span>
+      <span class="ri ri-best">Passkey</span><span class="ri-sep">›</span>
+      <span class="ri ri-good">Authenticator App (TOTP)</span><span class="ri-sep">›</span>
+      <span class="ri ri-ok">Email OTP</span><span class="ri-sep">›</span>
+      <span class="ri ri-weak">SMS OTP</span>
+      <span style="font-size:.76rem;color:var(--muted);margin-left:4px">(SMS is defeated by SIM swap — upgrade away from it where possible)</span>
+    </div>
+  </div>
 
-            <p class="card__body">
-              Generative audio models no longer need a recording studio. A <strong style="color:var(--text)">three-second
-              clip</strong> — scraped from an Instagram reel, a voicemail greeting, a podcast cameo, or a TikTok — is
-              enough to synthesize a convincing clone of your voice, reproducing your accent, pace, and emotional inflection.
-            </p>
+  <h3 style="color:var(--text);font-size:.97rem;font-weight:700;margin-bottom:13px">Authenticator Apps</h3>
+  <div class="tgrid" style="margin-bottom:26px">
+    <div class="tc tc-blue">
+      <div class="tc-head"><div class="tc-logo">🔷</div><div><div class="tc-name">Authy</div><span class="tc-tag tag-free">Free</span></div></div>
+      <div class="tc-desc">Multi-device sync and encrypted cloud backups. Has a standalone desktop app — excellent if you ever lose your phone. Best all-round choice for most users.</div>
+      <a class="tc-link" href="https://authy.com" target="_blank" rel="noopener">authy.com ↗</a>
+    </div>
+    <div class="tc tc-blue">
+      <div class="tc-head"><div class="tc-logo">🔵</div><div><div class="tc-name">Google Authenticator</div><span class="tc-tag tag-free">Free</span></div></div>
+      <div class="tc-desc">Simple TOTP app with Google account sync. Works offline. Widely compatible with almost every service that offers 2FA. Setup guide via link.</div>
+      <a class="tc-link" href="https://support.google.com/accounts/answer/1066447" target="_blank" rel="noopener">Setup Guide ↗</a>
+    </div>
+    <div class="tc tc-blue">
+      <div class="tc-head"><div class="tc-logo">🔵</div><div><div class="tc-name">Microsoft Authenticator</div><span class="tc-tag tag-free">Free</span></div></div>
+      <div class="tc-desc">Best for Microsoft / Azure accounts. Supports number-matching push to stop MFA-fatigue attacks. Enables passwordless phone sign-in for Microsoft accounts.</div>
+      <a class="tc-link" href="https://www.microsoft.com/en-us/security/mobile-authenticator-app" target="_blank" rel="noopener">Get App ↗</a>
+    </div>
+    <div class="tc tc-purple">
+      <div class="tc-head"><div class="tc-logo">🟣</div><div><div class="tc-name">Duo Mobile</div><span class="tc-tag tag-fm">Freemium</span></div></div>
+      <div class="tc-desc">Widely deployed in universities and enterprises. Personal free tier available. Verified push prevents MFA-bombing. Excellent for work accounts.</div>
+      <a class="tc-link" href="https://duo.com" target="_blank" rel="noopener">duo.com ↗</a>
+    </div>
+  </div>
 
-            <ul class="vectors">
-              <li><strong>Voiceprint bypass:</strong> banks and call centers that use "my voice is my password" biometrics can be fooled by a synthetic sample played down the line.</li>
-              <li><strong>Family emergency scams:</strong> cloned voices phone relatives feigning a car crash, arrest, or kidnapping to extract urgent wires and gift cards.</li>
-              <li><strong>Executive impersonation:</strong> deepfaked audio and video of a CFO or manager authorize fraudulent payments and credential resets (CEO fraud).</li>
-              <li><strong>Real-time conversion:</strong> live voice-changing now lets a scammer hold an interactive two-way conversation in a stolen voice.</li>
-            </ul>
+  <h3 style="color:var(--text);font-size:.97rem;font-weight:700;margin-bottom:13px">Hardware Security Keys — strongest possible protection</h3>
+  <div class="tgrid" style="margin-bottom:0">
+    <div class="tc tc-green">
+      <div class="tc-head"><div class="tc-logo">🔑</div><div><div class="tc-name">YubiKey (Yubico)</div><span class="tc-tag tag-paid">$25–$85</span></div></div>
+      <div class="tc-desc">The most widely supported FIDO2/WebAuthn key. Works with Google, Apple, Microsoft, GitHub, Bitwarden, and hundreds more. Immune to AiTM phishing — verifies the real domain in silicon. Buy two: primary in use, backup locked offsite. Available in USB-A, USB-C, NFC, and Lightning variants.</div>
+      <a class="tc-link" href="https://www.yubico.com" target="_blank" rel="noopener">yubico.com ↗</a>
+    </div>
+    <div class="tc tc-green">
+      <div class="tc-head"><div class="tc-logo">🔰</div><div><div class="tc-name">Google Titan Key</div><span class="tc-tag tag-paid">From $30</span></div></div>
+      <div class="tc-desc">Google's own FIDO2 key. USB-C and NFC variants available. Deep Google account integration. Good alternative to YubiKey for Google-centric users.</div>
+      <a class="tc-link" href="https://store.google.com/us/category/security_keys" target="_blank" rel="noopener">Google Store ↗</a>
+    </div>
+  </div>
 
-            <div class="card__footer">
-              <span class="card__footer-label">Bypasses</span>
-              <span class="tag">Voice Biometrics</span>
-              <span class="tag">Phone Verification</span>
-              <span class="tag">Human Trust</span>
-            </div>
-          </article>
+  <div class="setup-block">
+    <h4>How to Enable 2FA on Your Most Important Accounts</h4>
+    <div class="setup-grid">
+      <div class="setup-item">
+        <div class="si-title">Google Account</div>
+        <div class="si-path">myaccount.google.com → Security → 2-Step Verification → Get started</div>
+      </div>
+      <div class="setup-item">
+        <div class="si-title">Apple ID</div>
+        <div class="si-path">Settings → [Your Name] → <code>Sign-In &amp; Security</code> → Two-Factor Authentication</div>
+      </div>
+      <div class="setup-item">
+        <div class="si-title">Microsoft Account</div>
+        <div class="si-path">account.microsoft.com → Security → Advanced security options → 2-step verification</div>
+      </div>
+      <div class="setup-item">
+        <div class="si-title">Facebook / Instagram</div>
+        <div class="si-path">Settings → Password and Security → Two-factor authentication → Authentication App</div>
+      </div>
+      <div class="setup-item">
+        <div class="si-title">Your Bank</div>
+        <div class="si-path">Look for "Security" or "Login" in your mobile banking app. Call support if the 2FA option isn't visible — ask for "authenticator app 2FA".</div>
+      </div>
+      <div class="setup-item">
+        <div class="si-title">Coinbase / Crypto</div>
+        <div class="si-path">Profile → Security → 2-Step Verification → Select <code>Authenticator App</code> — never SMS for crypto accounts.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <!-- THREAT 3 — SIM Swapping & Quishing -->
-          <article class="card card--threat">
-            <div class="card__head">
-              <span class="card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="6" y="2" width="12" height="20" rx="2.5" />
-                  <line x1="10" y1="18" x2="14" y2="18" />
-                  <path d="M9.5 7h3v3" />
-                  <path d="M14.5 13h-3v-3" />
-                </svg>
-              </span>
-              <div class="card__heading">
-                <h3 class="card__title">
-                  SIM Swapping &amp; Quishing
-                  <span class="nuance">Number takeover &amp; weaponized QR codes</span>
-                </h3>
-                <span class="badge badge--high">High · Account Takeover</span>
-              </div>
-            </div>
+<!-- ══════════════ TOOLS DIRECTORY ══════════════ -->
+<section class="section">
+  <div class="sh">
+    <span class="sh-icon ic-muted">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+    </span>
+    <div>
+      <div class="sh-title">Complete Tools Directory</div>
+      <div class="sh-sub sb-muted">Every resource, categorised and linked</div>
+    </div>
+  </div>
+  <div class="dir-grid">
 
-            <p class="card__body">
-              Two attacks converge on the device you trust most. One steals your phone <strong style="color:var(--text)">number</strong>;
-              the other weaponizes the <strong style="color:var(--text)">camera</strong> you use to scan everyday codes.
-            </p>
+    <!-- Password managers -->
+    <div class="dcat">
+      <div class="dcat-h dh-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="5"/><path d="M11.5 11.5 21 2"/></svg>Password Managers</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Bitwarden</div><div class="di-note">Free · Open Source</div></div><a class="di-link" href="https://bitwarden.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">1Password</div><div class="di-note">$3/mo · Best UX</div></div><a class="di-link" href="https://1password.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Dashlane</div><div class="di-note">Freemium · Built-in VPN</div></div><a class="di-link" href="https://www.dashlane.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Keeper</div><div class="di-note">$3/mo · Enterprise grade</div></div><a class="di-link" href="https://www.keepersecurity.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">NordPass</div><div class="di-note">Freemium · XChaCha20</div></div><a class="di-link" href="https://nordpass.com" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-            <ul class="vectors">
-              <li><strong>SIM swap:</strong> attackers pretext or bribe carrier staff — armed with breached personal data or a forged ID — to port your number onto a SIM they control.</li>
-              <li><strong>Number equals identity:</strong> the moment the port completes, every SMS one-time code, call-based reset, and recovery text is delivered to the attacker.</li>
-              <li><strong>Quishing (QR phishing):</strong> malicious QR codes pasted over parking meters, mailed on fake notices, or embedded in PDFs slip past email scanners because they are images, not links.</li>
-              <li><strong>Mobile blind spot:</strong> a phone's small screen hides the true destination URL, so a hijacked session or credential-harvest page is far harder to spot.</li>
-            </ul>
+    <!-- MFA tools -->
+    <div class="dcat">
+      <div class="dcat-h dh-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>MFA &amp; 2FA Tools</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Authy</div><div class="di-note">Free · Multi-device backup</div></div><a class="di-link" href="https://authy.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Google Authenticator</div><div class="di-note">Free · TOTP</div></div><a class="di-link" href="https://support.google.com/accounts/answer/1066447" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Microsoft Authenticator</div><div class="di-note">Free · Push MFA</div></div><a class="di-link" href="https://www.microsoft.com/en-us/security/mobile-authenticator-app" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Duo Mobile</div><div class="di-note">Freemium · Enterprise</div></div><a class="di-link" href="https://duo.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">YubiKey (Yubico)</div><div class="di-note">$25–85 · FIDO2 Hardware</div></div><a class="di-link" href="https://www.yubico.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Google Titan Key</div><div class="di-note">From $30 · FIDO2</div></div><a class="di-link" href="https://store.google.com/us/category/security_keys" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-            <div class="card__footer">
-              <span class="card__footer-label">Bypasses</span>
-              <span class="tag">SMS OTP</span>
-              <span class="tag">Carrier Trust</span>
-              <span class="tag">URL Inspection</span>
-            </div>
-          </article>
+    <!-- Identity protection -->
+    <div class="dcat">
+      <div class="dcat-h dh-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/></svg>Identity Protection</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Aura</div><div class="di-note">Paid · All-in-one monitoring</div></div><a class="di-link" href="https://www.aura.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">IdentityForce</div><div class="di-note">Paid · SSN monitoring</div></div><a class="di-link" href="https://www.identityforce.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">LifeLock</div><div class="di-note">Paid · Norton-backed</div></div><a class="di-link" href="https://www.lifelock.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">HaveIBeenPwned</div><div class="di-note">Free · Breach email alerts</div></div><a class="di-link" href="https://haveibeenpwned.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">IdentityTheft.gov</div><div class="di-note">Free · FTC recovery plan</div></div><a class="di-link" href="https://www.identitytheft.gov" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-        </div>
-      </section>
+    <!-- Credit bureaus -->
+    <div class="dcat">
+      <div class="dcat-h dh-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Credit Freeze &amp; Bureaus</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Equifax — Freeze</div><div class="di-note">Free · Bureau 1 of 3</div></div><a class="di-link" href="https://www.equifax.com/personal/credit-report-services/credit-freeze/" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Experian — Freeze</div><div class="di-note">Free · Bureau 2 of 3</div></div><a class="di-link" href="https://www.experian.com/freeze/center.html" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">TransUnion — Freeze</div><div class="di-note">Free · Bureau 3 of 3</div></div><a class="di-link" href="https://www.transunion.com/credit-freeze" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">AnnualCreditReport.com</div><div class="di-note">Free · Official annual report</div></div><a class="di-link" href="https://www.annualcreditreport.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">CFPB</div><div class="di-note">Gov · Consumer protection</div></div><a class="di-link" href="https://www.consumerfinance.gov" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-      <!-- ======================================================== -->
-      <!-- RIGHT COLUMN — THE SECURITY STACK                        -->
-      <!-- ======================================================== -->
-      <section class="column column--defense" aria-labelledby="defense-title">
-        <div class="column__header">
-          <span class="column__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
-          </span>
-          <div>
-            <h2 class="column__title" id="defense-title">The Security Stack</h2>
-            <span class="column__sub">Tactical Defensive Manual</span>
-          </div>
-        </div>
+    <!-- Call blocking -->
+    <div class="dcat">
+      <div class="dcat-h dh-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.5 16.5 19 19a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2l2.5 2.5"/></svg>Call &amp; Spam Blocking</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">RoboKiller</div><div class="di-note">Paid · Answer bots</div></div><a class="di-link" href="https://www.robokiller.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Nomorobo</div><div class="di-note">Paid · Robocall blocking</div></div><a class="di-link" href="https://www.nomorobo.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Hiya</div><div class="di-note">Free/Paid · Caller ID &amp; spam</div></div><a class="di-link" href="https://hiya.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Do Not Call Registry</div><div class="di-note">Free · FTC Gov</div></div><a class="di-link" href="https://www.donotcall.gov" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-        <div class="stack">
+    <!-- VPN / Privacy -->
+    <div class="dcat">
+      <div class="dcat-h dh-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>VPN &amp; Privacy</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">ProtonVPN</div><div class="di-note">Free/Paid · Swiss · Open source</div></div><a class="di-link" href="https://protonvpn.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Mullvad</div><div class="di-note">€5/mo · No-logs · Anonymous</div></div><a class="di-link" href="https://mullvad.net" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">ExpressVPN</div><div class="di-note">Paid · Fast · Audited</div></div><a class="di-link" href="https://www.expressvpn.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Privacy.com</div><div class="di-note">Free · Virtual card numbers</div></div><a class="di-link" href="https://privacy.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Proton Mail</div><div class="di-note">Free/Paid · E2EE email</div></div><a class="di-link" href="https://proton.me" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-          <!-- DEFENSE 1 — Identity & Access Control -->
-          <article class="card card--defense">
-            <div class="card__head">
-              <span class="card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="8" cy="15" r="5" />
-                  <path d="M11.5 11.5 21 2" />
-                  <path d="M16.5 6.5 19 9" />
-                  <path d="M13.5 9.5 16 12" />
-                </svg>
-              </span>
-              <div class="card__heading">
-                <h3 class="card__title">
-                  Identity &amp; Access Control
-                  <span class="nuance">Phishing-resistant authentication</span>
-                </h3>
-                <span class="badge badge--layer">Layer 01 · Credentials</span>
-              </div>
-            </div>
+    <!-- Report / Government -->
+    <div class="dcat">
+      <div class="dcat-h dh-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Report a Crime / Breach</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">IC3.gov (FBI)</div><div class="di-note">Report internet / cyber crime</div></div><a class="di-link" href="https://www.ic3.gov" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">ReportFraud.ftc.gov</div><div class="di-note">FTC fraud report</div></div><a class="di-link" href="https://reportfraud.ftc.gov" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">IdentityTheft.gov</div><div class="di-note">FTC · Identity recovery plan</div></div><a class="di-link" href="https://www.identitytheft.gov" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">USA.gov — Identity Theft</div><div class="di-note">Step-by-step recovery guide</div></div><a class="di-link" href="https://www.usa.gov/identity-theft" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
-            <ol class="steps">
-              <li class="step">
-                <span class="step__num">1</span>
-                <div class="step__body">
-                  <p class="step__title">Deploy a dedicated password manager</p>
-                  <p class="step__text">
-                    Install a standalone vault and migrate every credential out of your browser's built-in store — those
-                    are tied to a single, often weakly-protected profile. Generate unique <code>16+ character</code> random
-                    passwords for each account, then write your master password and emergency recovery sentence onto
-                    <strong style="color:var(--text)">paper</strong> and seal it in a physical safe. Never store the master key in a digital note.
-                  </p>
-                </div>
-              </li>
-              <li class="step">
-                <span class="step__num">2</span>
-                <div class="step__body">
-                  <p class="step__title">Transition master accounts to Passkeys</p>
-                  <p class="step__text">
-                    Convert your highest-value identity providers — <strong style="color:var(--text)">Google, Apple,
-                    Microsoft</strong> — to Passkeys, unlocked by local biometrics (Face ID, Touch ID, Windows Hello).
-                    Because the private key never leaves your device and is cryptographically bound to the real domain,
-                    AiTM proxies and cloned pages have nothing to steal.
-                  </p>
-                </div>
-              </li>
-              <li class="step">
-                <span class="step__num">3</span>
-                <div class="step__body">
-                  <p class="step__title">Register a primary + backup hardware key</p>
-                  <p class="step__text">
-                    Enroll a physical <code>FIDO2 / WebAuthn</code> security key as your strongest factor, then enroll a
-                    <strong style="color:var(--text)">second key</strong> as backup and lock it in a separate location. The
-                    key verifies the legitimate domain in silicon — immune to real-time phishing relays — and a spare means
-                    losing one device never locks you out.
-                  </p>
-                </div>
-              </li>
-            </ol>
-
-            <div class="toolbar">
-              <span class="toolbar__label">Deploy Tools</span>
-              <div class="pills">
-                <a class="pill" href="https://bitwarden.com" target="_blank" rel="noopener">
-                  Bitwarden
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-                <a class="pill" href="https://1password.com" target="_blank" rel="noopener">
-                  1Password
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-                <a class="pill" href="https://www.yubico.com" target="_blank" rel="noopener">
-                  Yubico
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <!-- DEFENSE 2 — Communication Infrastructure -->
-          <article class="card card--defense">
-            <div class="card__head">
-              <span class="card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L20 13l1 5v1a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />
-                  <path d="M15 4h6" />
-                  <path d="M18 1v6" />
-                </svg>
-              </span>
-              <div class="card__heading">
-                <h3 class="card__title">
-                  Communication Infrastructure
-                  <span class="nuance">Lock the carrier &amp; the inbound channel</span>
-                </h3>
-                <span class="badge badge--layer">Layer 02 · Telecom</span>
-              </div>
-            </div>
-
-            <ol class="steps">
-              <li class="step">
-                <span class="step__num">1</span>
-                <div class="step__body">
-                  <p class="step__title">Lock your number at the carrier</p>
-                  <p class="step__text">
-                    Phone your mobile provider and explicitly request a <strong style="color:var(--text)">Port-Out Lock /
-                    Number Lock</strong> and a <code>SIM PIN</code>. Add a separate verbal passphrase or account PIN that
-                    must be spoken before any change is processed. This single step is the most effective defense against
-                    SIM swapping.
-                  </p>
-                </div>
-              </li>
-              <li class="step">
-                <span class="step__num">2</span>
-                <div class="step__body">
-                  <p class="step__title">Filter the inbound channel</p>
-                  <p class="step__text">
-                    Enable <strong style="color:var(--text)">Silence Unknown Callers</strong> so unrecognized numbers route
-                    straight to voicemail — <code>iOS: Settings → Apps → Phone</code> · <code>Android: Phone → Settings →
-                    Caller ID &amp; spam</code>. Layer a dedicated call-screening service on top to block known robocall and
-                    spoofing campaigns, and register on the national do-not-call list to cut baseline volume.
-                  </p>
-                </div>
-              </li>
-            </ol>
-
-            <div class="toolbar">
-              <span class="toolbar__label">Deploy Tools</span>
-              <div class="pills">
-                <a class="pill" href="https://www.robokiller.com" target="_blank" rel="noopener">
-                  RoboKiller
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-                <a class="pill pill--gov" href="https://www.donotcall.gov" target="_blank" rel="noopener">
-                  Do Not Call Registry
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <!-- DEFENSE 3 — Asset & Vault Safeguards -->
-          <article class="card card--defense">
-            <div class="card__head">
-              <span class="card__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="16" rx="2.5" />
-                  <circle cx="12" cy="12" r="3.5" />
-                  <line x1="12" y1="12" x2="12" y2="8.5" />
-                  <line x1="19" y1="20" x2="19" y2="22" />
-                  <line x1="5" y1="20" x2="5" y2="22" />
-                </svg>
-              </span>
-              <div class="card__heading">
-                <h3 class="card__title">
-                  Asset &amp; Vault Safeguards
-                  <span class="nuance">Freeze credit &amp; encrypt the cloud</span>
-                </h3>
-                <span class="badge badge--layer">Layer 03 · Assets</span>
-              </div>
-            </div>
-
-            <ol class="steps">
-              <li class="step">
-                <span class="step__num">1</span>
-                <div class="step__body">
-                  <p class="step__title">Freeze all three credit bureaus</p>
-                  <p class="step__text">
-                    Place a security freeze with each of the three major bureaus individually —
-                    <strong style="color:var(--text)">Equifax, Experian, and TransUnion</strong>. A freeze blocks new lines
-                    of credit from being opened in your name, is free to set and lift, and is the cornerstone of identity
-                    protection. Use a monitoring service to watch all three from one dashboard.
-                  </p>
-                </div>
-              </li>
-              <li class="step">
-                <span class="step__num">2</span>
-                <div class="step__body">
-                  <p class="step__title">Encrypt your cloud nodes (E2EE)</p>
-                  <p class="step__text">
-                    Turn on end-to-end encryption for your cloud backups and storage. On Apple devices, enable
-                    <strong style="color:var(--text)">Advanced Data Protection</strong> —
-                    <code>Settings → [your name] → iCloud → Advanced Data Protection</code> — to extend E2EE across iCloud
-                    Backup, Photos, and Notes so not even the provider can read them. If your identity is already
-                    compromised, file an official recovery plan immediately.
-                  </p>
-                </div>
-              </li>
-            </ol>
-
-            <div class="toolbar">
-              <span class="toolbar__label">Deploy Tools</span>
-              <div class="pills">
-                <a class="pill" href="https://www.aura.com" target="_blank" rel="noopener">
-                  Aura
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-                <a class="pill pill--gov" href="https://www.identitytheft.gov" target="_blank" rel="noopener">
-                  IdentityTheft.gov
-                  <span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></span>
-                </a>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </section>
-
-    </main>
-
-    <!-- ============================ FOOTER ============================ -->
-    <footer class="site-footer">
-      <p>
-        <strong>Operational note:</strong> this console is an educational hardening manual. Linked tools are independent
-        third-party and government resources provided for convenience — no affiliation or endorsement is implied. Always
-        verify a vendor and a URL directly before acting on any security change.
-      </p>
-      <span class="footer-meta">Defense Console · Static Build</span>
-    </footer>
+    <!-- E2EE Messaging -->
+    <div class="dcat">
+      <div class="dcat-h dh-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Secure Messaging</div>
+      <div class="dcat-b">
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Signal</div><div class="di-note">Free · Best-in-class E2EE</div></div><a class="di-link" href="https://signal.org" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">WhatsApp</div><div class="di-note">Free · E2EE · Widely used</div></div><a class="di-link" href="https://www.whatsapp.com" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">iMessage (Apple)</div><div class="di-note">Free · E2EE between Apple users</div></div><a class="di-link" href="https://support.apple.com/en-us/111973" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="ditem"><div class="ditem-l"><div class="di-name">Proton Mail</div><div class="di-note">Free/Paid · E2EE email</div></div><a class="di-link" href="https://proton.me" target="_blank" rel="noopener">Open ↗</a></div>
+      </div>
+    </div>
 
   </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="footer">
+  <p>Educational reference only. All linked tools are independent third-party and government resources — no affiliation or endorsement implied. Verify every vendor directly before acting on any security change. If you have been a victim of fraud, file a report at <a href="https://reportfraud.ftc.gov" target="_blank" rel="noopener">reportfraud.ftc.gov</a> and <a href="https://www.ic3.gov" target="_blank" rel="noopener">ic3.gov</a>.</p>
+  <span class="ft-mono">Personal Security Blueprint · 2026</span>
+</footer>
+
+</div>
 </body>
 </html>
