@@ -66,4 +66,4 @@ node scanner/cli.js path/to/project
 python3 -m http.server              # then open http://localhost:8000/scan.html
 ```
 
-`scanner/rules.js` holds every rule and is shared by the CLI (`scanner/cli.js`) and the browser page (`scan.html`). `scanner/demo.js` is a deliberately insecure sample project. Its fake keys are generated at runtime so no credential-shaped strings are committed.
+`scanner/rules.js` holds every rule and is shared by the CLI (`scanner/cli.js`) and the browser page (`scan.html`). The CLI reads `.git/index` itself (`scanner/git-index.js`) instead of running git, so scanning an untrusted project can never trigger that project's git config. `scanner/demo.js` is a deliberately insecure sample project. Its fake keys are generated at runtime so no credential-shaped strings are committed.

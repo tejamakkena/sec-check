@@ -3,10 +3,10 @@
 //
 //   node scanner/cli.js [path] [--json] [--fail-on=critical|high|medium|low|none]
 
-import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
-import { join, relative, resolve, sep } from 'node:path';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { scanProject, isScannable, SKIP_DIRS, SEVERITIES, MAX_FILE_BYTES } from './rules.js';
+import { readGitIndex } from './git-index.js';
 
 const HELP = `sec-check: security check for AI-built apps
 
@@ -56,14 +56,21 @@ function collectFiles(root) {
   return files;
 }
 
-// Paths committed to git, relative to root, or null outside a repo.
+// Paths committed to git, relative to root, or null if unknown. Reads
+// .git/index directly instead of running git (see git-index.js for why).
 function trackedFiles(root) {
+  let repo = root;
+  while (!existsSync(join(repo, '.git'))) {
+    if (dirname(repo) === repo) return null;
+    repo = dirname(repo);
+  }
   try {
-    const out = execFileSync('git', ['ls-files', '-z', '--full-name', '.'], { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] });
-    const prefix = execFileSync('git', ['rev-parse', '--show-prefix'], { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
-    return new Set(out.toString().split('\0').filter(Boolean).map(p => p.slice(prefix.length)));
+    const paths = readGitIndex(readFileSync(join(repo, '.git', 'index')));
+    const prefix = relative(repo, root).split(sep).join('/');
+    if (!prefix) return paths;
+    return new Set([...paths].filter(p => p.startsWith(`${prefix}/`)).map(p => p.slice(prefix.length + 1)));
   } catch {
-    return null;
+    return null; // worktree or submodule (.git is a file), no commits yet, or an unknown format
   }
 }
 

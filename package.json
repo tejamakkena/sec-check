@@ -10,7 +10,7 @@
     "scanner/*.js"
   ],
   "scripts": {
-    "test": "node --test scanner/test/rules.test.js",
+    "test": "node --test scanner/test/rules.test.js scanner/test/git-index.test.js",
     "scan": "node scanner/cli.js"
   },
   "engines": {
