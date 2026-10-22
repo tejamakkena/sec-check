@@ -74,6 +74,8 @@ h1.hdr-title span{
 }
 .hdr-sub{font-size:clamp(.95rem,1.5vw,1.1rem);color:var(--body);max-width:60ch;margin-bottom:22px}
 .hdr-stats{display:flex;flex-wrap:wrap;gap:10px}
+.hdr-tool{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:9px 16px;border-radius:var(--pill);border:1px solid rgba(59,130,246,.35);background:rgba(59,130,246,.1);color:var(--blue2);font-size:.9rem;font-weight:600;text-decoration:none}
+.hdr-tool:hover{background:rgba(59,130,246,.18);color:var(--text)}
 .stat{
   display:inline-flex;align-items:center;gap:8px;padding:7px 14px;
   border-radius:var(--pill);border:1px solid var(--border2);background:rgba(255,255,255,.03);
@@ -342,6 +344,7 @@ h1.hdr-title span{
         <span class="stat"><span class="dot dot-a"></span> Avg loss per victim: <strong>$1,500+</strong></span>
         <span class="stat"><span class="dot dot-g"></span> Most breaches are <strong>100 % preventable</strong></span>
       </div>
+      <a class="hdr-tool" href="scan.html">Built an app with AI? Check it for leaked keys and open databases →</a>
     </div>
     <div class="hdr-score">
       <div class="score-ring">
