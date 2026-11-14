@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="sec-check scanner: find leaked API keys, missing Supabase row-level security and open Firebase rules in apps built with Lovable, Bolt, Cursor or Replit. Runs entirely in your browser."/>
+<title>sec-check Scanner</title>
+<style>
+:root {
+  --bg:#08090f; --surface:#0e1420; --card:#131b2a; --card2:#192236;
+  --border:#1c2b40; --border2:#243550;
+  --text:#e8edf7; --body:#b0c2da; --muted:#607898; --faint:#3a506e;
+  --red:#ef4444; --red2:#f87171; --amber:#f59e0b; --amber2:#fbbf24;
+  --green:#10b981; --green2:#34d399; --blue:#3b82f6; --blue2:#60a5fa;
+  --cyan:#06b6d4; --cyan2:#22d3ee; --purple:#8b5cf6; --purple2:#a78bfa;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px; --r-sm:9px; --pill:999px;
+  --sh:0 20px 50px -18px rgba(0,0,0,.9);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--body);
+  line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 1200px 600px at 50% -80px,rgba(59,130,246,.11),transparent 55%),
+    radial-gradient(ellipse 700px 500px at 95% 40%,rgba(16,185,129,.06),transparent 55%);
+  background-attachment:fixed;
+}
+a{color:var(--blue2)}
+code,pre{font-family:var(--mono)}
+::selection{background:rgba(59,130,246,.3)}
+.page{max-width:980px;margin:0 auto;padding:clamp(16px,4vw,40px)}
+.back{display:inline-block;margin-bottom:18px;font-size:.85rem;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--text)}
+
+.hdr{position:relative;border:1px solid var(--border);border-radius:18px;background:linear-gradient(160deg,#0d1826,#09111f);padding:clamp(20px,4vw,38px);overflow:hidden;box-shadow:var(--sh)}
+.hdr::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue) 25%,var(--green) 55%,var(--purple) 80%,transparent)}
+.kicker{display:inline-block;margin-bottom:12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green2);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);padding:4px 12px;border-radius:var(--pill)}
+h1{color:var(--text);font-size:clamp(1.6rem,4.4vw,2.5rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+h1 span{background:linear-gradient(90deg,var(--green2),var(--blue2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{max-width:680px;font-size:1.02rem}
+.privacy{display:flex;gap:10px;align-items:flex-start;margin-top:18px;padding:12px 14px;border-radius:var(--r-sm);background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);font-size:.9rem;color:var(--green2)}
+
+.drop{margin-top:22px;border:2px dashed var(--border2);border-radius:var(--r);padding:clamp(22px,5vw,40px) 18px;text-align:center;background:var(--surface);transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--blue);background:rgba(59,130,246,.07)}
+.drop h2{color:var(--text);font-size:1.1rem;margin-bottom:6px}
+.drop p{font-size:.88rem;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px}
+.btn{font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;border-radius:var(--pill);padding:10px 18px;border:1px solid var(--border2);background:var(--card2);color:var(--text)}
+.btn:hover{border-color:var(--blue2)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue2)}
+.btn.small{font-size:.8rem;padding:6px 12px}
+.btn:focus-visible{outline:2px solid var(--blue2);outline-offset:2px}
+#status{margin-top:14px;min-height:1.4em;font-size:.9rem;color:var(--muted);text-align:center}
+
+.section{margin-top:clamp(28px,5vw,48px)}
+.section h2.title{color:var(--text);font-size:1.25rem;margin-bottom:14px}
+
+.summary{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:18px;border:1px solid var(--border);border-radius:var(--r);background:var(--card)}
+.grade{flex:none;width:76px;height:76px;border-radius:18px;display:grid;place-items:center;font-size:2.4rem;font-weight:800;color:#fff}
+.grade.A{background:var(--green)}.grade.B{background:var(--cyan)}.grade.C{background:var(--amber)}.grade.D{background:#ea580c}.grade.F{background:var(--red)}
+.summary-text{flex:1;min-width:200px}
+.summary-text strong{display:block;color:var(--text);font-size:1.05rem}
+.counts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.summary .actions{margin-top:0;justify-content:flex-start}
+
+.pill{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:var(--pill);border:1px solid}
+.pill.critical{color:#fff;background:var(--red);border-color:var(--red)}
+.pill.high{color:var(--red2);background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35)}
+.pill.medium{color:var(--amber2);background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35)}
+.pill.low{color:var(--cyan2);background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.35)}
+
+.finding{margin-top:12px;border:1px solid var(--border);border-left:4px solid var(--faint);border-radius:var(--r);background:var(--card);padding:16px 18px}
+.finding.critical{border-left-color:var(--red)}.finding.high{border-left-color:#ea580c}.finding.medium{border-left-color:var(--amber)}.finding.low{border-left-color:var(--cyan)}
+.finding h3{color:var(--text);font-size:1rem;line-height:1.35;margin:8px 0 4px;overflow-wrap:anywhere}
+.where{font-family:var(--mono);font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.evidence{display:block;margin-top:8px;padding:8px 10px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--border);font-size:.8rem;color:var(--body);white-space:pre-wrap;overflow-wrap:anywhere}
+.finding dl{margin-top:10px;font-size:.92rem}
+.finding dt{margin-top:8px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prompt{margin-top:12px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.07);border-radius:var(--r-sm);padding:10px 12px}
+.prompt-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple2)}
+.prompt pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82rem;color:var(--body)}
+.clean{padding:22px;border:1px solid rgba(16,185,129,.3);border-radius:var(--r);background:rgba(16,185,129,.07);color:var(--green2)}
+
+.rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.rule{border:1px solid var(--border);border-radius:var(--r);background:var(--card);padding:14px 16px}
+.rule strong{display:block;color:var(--text);font-size:.95rem;margin-bottom:4px}
+.rule span{font-size:.86rem}
+.cli{padding:16px 18px;border:1px solid var(--border);border-radius:var(--r);background:var(--card)}
+.cli pre{margin-top:10px;padding:12px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--border);font-size:.82rem;color:var(--text);overflow-x:auto}
+.cli p+p{margin-top:10px}
+.note{font-size:.88rem;color:var(--muted)}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted)}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back" href="./">← Personal Digital Security Blueprint</a>
+
+  <header class="hdr">
+    <div class="kicker">sec-check · scanner</div>
+    <h1>Security check for your <span>AI-built app</span></h1>
+    <p class="sub">Apps made with Lovable, Bolt, Cursor, Replit and v0 tend to ship the same few mistakes: API keys in the frontend, Supabase tables without row-level security, and Firebase rules left in test mode. Pick your project folder to find them, along with a fix prompt you can paste straight back into your AI tool.</p>
+    <div class="privacy" role="note">
+      <span aria-hidden="true">🔒</span>
+      <span>Runs entirely in your browser. Your code is never uploaded, stored or sent anywhere. Scan only projects you own or have permission to review.</span>
+    </div>
+  </header>
+
+  <div class="drop" id="drop">
+    <h2>Drop your project folder here</h2>
+    <p>Or choose it below. node_modules, build output and lockfiles are skipped automatically.</p>
+    <div class="actions">
+      <label class="btn primary" for="folder">Choose project folder</label>
+      <input class="visually-hidden" type="file" id="folder" webkitdirectory directory multiple/>
+      <button class="btn" id="demo" type="button">Try a demo project</button>
+    </div>
+    <p style="margin-top:12px">Your browser may ask to "upload" the files. That's just its wording: they're only read on this page.</p>
+  </div>
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <section class="section" id="results" hidden></section>
+
+  <section class="section">
+    <h2 class="title">What sec-check looks for</h2>
+    <div class="rules" id="rules"></div>
+  </section>
+
+  <section class="section">
+    <h2 class="title">Run it from the terminal or in CI</h2>
+    <div class="cli">
+      <p>Same checks, no install needed (Node 18+). It exits with code 1 when it finds anything high or critical, so you can block risky deploys in CI.</p>
+      <pre>npx github:tejamakkena/sec-check ./my-app
+npx github:tejamakkena/sec-check ./my-app --json --fail-on=critical</pre>
+      <p class="note">To silence a finding you have checked, add <code>sec-check-ignore</code> in a comment on that line.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="title">What it can't tell you</h2>
+    <p class="note">sec-check reads your source code. It doesn't connect to your database or website, so it can't see tables or rules you changed in a dashboard, and a clean result is not a guarantee. If you use Supabase, also run <strong>Advisors → Security Advisor</strong> in your project dashboard.</p>
+  </section>
+
+  <footer>sec-check is open source · <a href="https://github.com/tejamakkena/sec-check">GitHub</a></footer>
+</div>
+
+<script type="module">
+import { scanProject, isScannable, RULES, SKIP_DIRS, SEVERITIES, MAX_FILE_BYTES } from './scanner/rules.js';
+import { demoProject } from './scanner/demo.js';
+
+const $ = id => document.getElementById(id);
+const status = $('status');
+const results = $('results');
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+    else node.setAttribute(k, v);
+  }
+  for (const c of children.flat()) if (c != null) node.append(c);
+  return node;
+}
+
+// ── "What we check" ──
+$('rules').append(...Object.values(RULES).map(r => el('div', { class: 'rule' }, el('strong', {}, r.name), el('span', {}, r.summary))));
+
+// ── Reading files ──
+async function readFiles(entries) {
+  // entries: [{ path, file }] with paths relative to the project root
+  const wanted = entries.filter(e => isScannable(e.path) && e.file.size <= MAX_FILE_BYTES);
+  const files = [];
+  for (const [i, e] of wanted.entries()) {
+    if (i % 50 === 0) status.textContent = `Reading files… ${i} / ${wanted.length}`;
+    try { files.push({ path: e.path, content: await e.file.text() }); } catch { /* unreadable, skip */ }
+  }
+  return files;
+}
+
+function stripRoot(paths) {
+  const first = paths[0]?.split('/')[0];
+  const shared = first && paths.every(p => p.startsWith(`${first}/`));
+  return p => (shared ? p.slice(first.length + 1) : p);
+}
+
+$('folder').addEventListener('change', async e => {
+  const list = [...e.target.files];
+  if (!list.length) return;
+  const strip = stripRoot(list.map(f => f.webkitRelativePath || f.name));
+  run(await readFiles(list.map(f => ({ path: strip(f.webkitRelativePath || f.name), file: f }))), list[0].webkitRelativePath.split('/')[0]);
+  e.target.value = '';
+});
+
+// Drag and drop: walk directories ourselves so node_modules is never enumerated.
+function readAllEntries(reader) {
+  return new Promise((resolve, reject) => {
+    const all = [];
+    const next = () => reader.readEntries(batch => (batch.length ? (all.push(...batch), next()) : resolve(all)), reject);
+    next();
+  });
+}
+async function walkEntry(entry, out) {
+  if (entry.isFile) {
+    const file = await new Promise((res, rej) => entry.file(res, rej));
+    out.push({ path: entry.fullPath.replace(/^\//, ''), file });
+  } else if (entry.isDirectory && !SKIP_DIRS.has(entry.name)) {
+    for (const child of await readAllEntries(entry.createReader())) await walkEntry(child, out);
+  }
+}
+
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
+drop.addEventListener('drop', async e => {
+  e.preventDefault();
+  const roots = [...e.dataTransfer.items].map(i => i.webkitGetAsEntry?.()).filter(Boolean);
+  if (!roots.length) return;
+  status.textContent = 'Listing files…';
+  const found = [];
+  try {
+    for (const root of roots) await walkEntry(root, found);
+  } catch {
+    status.textContent = 'Could not read that folder. Try the "Choose project folder" button instead.';
+    return;
+  }
+  const strip = stripRoot(found.map(f => f.path));
+  run(await readFiles(found.map(f => ({ path: strip(f.path), file: f.file }))), roots.length === 1 ? roots[0].name : 'dropped files');
+});
+
+$('demo').addEventListener('click', () => run(demoProject(), 'demo project'));
+
+// ── Results ──
+async function copy(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const area = el('textarea', {}, text);
+    document.body.append(area);
+    area.select();
+    try { document.execCommand('copy'); } catch { /* nothing else to try */ }
+    area.remove();
+  }
+  const label = button.textContent;
+  button.textContent = 'Copied ✓';
+  setTimeout(() => { button.textContent = label; }, 1500);
+}
+
+function toMarkdown(result, name) {
+  const lines = [`# sec-check report: ${name}`, '', `Grade **${result.grade}**: ${SEVERITIES.map(s => `${result.summary[s]} ${s}`).join(', ')} (${result.filesScanned} files scanned)`, ''];
+  for (const f of result.findings) {
+    lines.push(`## [${f.severity.toUpperCase()}] ${f.title}`, '', `\`${f.file}:${f.line}\` · \`${f.evidence}\``, '', f.why, '', `**Fix:** ${f.fix}`, '', '**AI fix prompt:**', '', `> ${f.prompt}`, '');
+  }
+  return lines.join('\n');
+}
+
+function download(name, text) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown' }));
+  const a = el('a', { href: url, download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function findingCard(f) {
+  const copyBtn = el('button', { class: 'btn small', type: 'button', onclick: () => copy(f.prompt, copyBtn) }, 'Copy prompt');
+  const more = f.occurrences > 1 ? ` (+${f.occurrences - 1} more)` : '';
+  return el('article', { class: `finding ${f.severity}` },
+    el('span', { class: `pill ${f.severity}` }, f.severity),
+    el('h3', {}, f.title),
+    el('div', { class: 'where' }, `${f.file}:${f.line}${more}`),
+    el('code', { class: 'evidence' }, f.evidence),
+    el('dl', {}, el('dt', {}, 'Why it matters'), el('dd', {}, f.why), el('dt', {}, 'How to fix'), el('dd', {}, f.fix)),
+    el('div', { class: 'prompt' },
+      el('div', { class: 'prompt-head' }, el('span', {}, 'Paste into your AI tool'), copyBtn),
+      el('pre', {}, f.prompt)));
+}
+
+function run(files, name) {
+  if (!files.length) {
+    status.textContent = 'No source files found in that folder. Pick the folder that contains package.json.';
+    return;
+  }
+  const result = scanProject(files);
+  status.textContent = `Scanned ${result.filesScanned} files from ${name}.`;
+  const { findings, summary, grade } = result;
+  const allPrompts = findings.map((f, i) => `${i + 1}. ${f.prompt}`).join('\n\n');
+  const copyAll = el('button', { class: 'btn small', type: 'button', onclick: () => copy(allPrompts, copyAll) }, 'Copy all fix prompts');
+  const report = el('button', { class: 'btn small', type: 'button', onclick: () => download('sec-check-report.md', toMarkdown(result, name)) }, 'Download report');
+
+  const headline = findings.length === 0
+    ? 'No issues found'
+    : summary.critical ? `${summary.critical} critical issue${summary.critical > 1 ? 's' : ''} to fix today`
+      : `${findings.length} issue${findings.length > 1 ? 's' : ''} found`;
+
+  results.replaceChildren(...[
+    el('h2', { class: 'title' }, 'Results'),
+    el('div', { class: 'summary' },
+      el('div', { class: `grade ${grade}`, 'aria-label': `Grade ${grade}` }, grade),
+      el('div', { class: 'summary-text' },
+        el('strong', {}, headline),
+        el('div', { class: 'counts' }, SEVERITIES.map(s => el('span', { class: `pill ${s}` }, `${summary[s]} ${s}`)))),
+      findings.length ? el('div', { class: 'actions' }, copyAll, report) : null),
+    findings.length
+      ? findings.map(findingCard)
+      : el('div', { class: 'clean', style: 'margin-top:12px' }, 'Nothing flagged. sec-check reads code only, so also check your live database and hosting settings, for example with Supabase Security Advisor.'),
+  ].flat().filter(Boolean));
+  results.hidden = false;
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

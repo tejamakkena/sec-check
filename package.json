@@ -1,0 +1,20 @@
+{
+  "name": "sec-check",
+  "version": "0.1.0",
+  "description": "Security check for AI-built apps: leaked keys, missing Supabase RLS, open Firebase rules.",
+  "type": "module",
+  "bin": {
+    "sec-check": "scanner/cli.js"
+  },
+  "files": [
+    "scanner/*.js"
+  ],
+  "scripts": {
+    "test": "node --test scanner/test/rules.test.js scanner/test/git-index.test.js",
+    "scan": "node scanner/cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
