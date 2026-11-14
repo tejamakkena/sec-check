@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Latest cybersecurity headlines from CISA, NCSC, BleepingComputer, The Hacker News, Krebs on Security and more, linked to the original stories."/>
+<title>Security News</title>
+<style>
+:root {
+  --bg:#08090f; --surface:#0e1420; --card:#131b2a; --card2:#192236;
+  --border:#1c2b40; --border2:#243550;
+  --text:#e8edf7; --body:#b0c2da; --muted:#607898; --faint:#3a506e;
+  --red:#ef4444; --red2:#f87171; --amber:#f59e0b; --amber2:#fbbf24;
+  --green:#10b981; --green2:#34d399; --blue:#3b82f6; --blue2:#60a5fa;
+  --cyan:#06b6d4; --cyan2:#22d3ee; --purple:#8b5cf6; --purple2:#a78bfa;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px; --r-sm:9px; --pill:999px;
+  --sh:0 20px 50px -18px rgba(0,0,0,.9);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--body);
+  line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 1200px 600px at 50% -80px,rgba(59,130,246,.11),transparent 55%),
+    radial-gradient(ellipse 700px 500px at 95% 40%,rgba(139,92,246,.06),transparent 55%);
+  background-attachment:fixed;
+}
+a{color:var(--blue2)}
+::selection{background:rgba(59,130,246,.3)}
+.page{max-width:920px;margin:0 auto;padding:clamp(16px,4vw,40px)}
+.back{display:inline-block;margin-bottom:18px;font-size:.85rem;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--text)}
+
+.hdr{position:relative;border:1px solid var(--border);border-radius:18px;background:linear-gradient(160deg,#0d1826,#09111f);padding:clamp(20px,4vw,34px);overflow:hidden;box-shadow:var(--sh)}
+.hdr::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue) 25%,var(--purple) 60%,var(--red) 85%,transparent)}
+.kicker{display:inline-block;margin-bottom:12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--blue2);background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.22);padding:4px 12px;border-radius:var(--pill)}
+h1{color:var(--text);font-size:clamp(1.6rem,4.4vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:10px}
+.sub{max-width:640px}
+#updated{margin-top:12px;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+
+.controls{position:sticky;top:0;z-index:5;margin-top:20px;padding:12px 0;background:linear-gradient(var(--bg) 80%,transparent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;border-radius:var(--pill);padding:6px 12px;border:1px solid var(--border2);background:var(--card);color:var(--body)}
+.chip:hover{border-color:var(--blue2);color:var(--text)}
+.chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip .n{opacity:.7;font-weight:500;margin-left:4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.row input,.row select{font:inherit;font-size:.9rem;color:var(--text);background:var(--card);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 12px}
+.row input{flex:1;min-width:180px}
+.row select{flex:0 1 240px;min-width:0}
+.row input:focus,.row select:focus,.chip:focus-visible,.more:focus-visible{outline:2px solid var(--blue2);outline-offset:2px}
+
+.day{margin:22px 0 8px;font-family:var(--mono);font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.item{display:block;margin-top:8px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r);background:var(--card);text-decoration:none;color:inherit;transition:border-color .12s,background .12s}
+.item:hover{border-color:var(--border2);background:var(--card2)}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.78rem;color:var(--muted)}
+.src{font-weight:700;color:var(--cyan2)}
+.item h2{margin:4px 0;color:var(--text);font-size:1.02rem;line-height:1.35;overflow-wrap:anywhere}
+.item:hover h2{color:var(--blue2)}
+.item p{font-size:.9rem;overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:var(--pill);border:1px solid var(--border2);color:var(--body)}
+.tag.exploited{color:var(--red2);border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08)}
+.tag.ransomware{color:var(--amber2);border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.08)}
+.tag.breach{color:var(--purple2);border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.08)}
+.tag.scams{color:var(--green2);border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)}
+.tag.ai{color:var(--cyan2);border-color:rgba(6,182,212,.4);background:rgba(6,182,212,.08)}
+.more{display:block;margin:20px auto 0;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer;border-radius:var(--pill);padding:10px 20px;border:1px solid var(--border2);background:var(--card2);color:var(--text)}
+.more:hover{border-color:var(--blue2)}
+@media (max-width:640px){
+  .controls{position:static}
+  .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+  .chip{flex:none}
+  .row select{flex:1 1 100%}
+}
+.empty{margin-top:20px;padding:20px;border:1px dashed var(--border2);border-radius:var(--r);text-align:center;color:var(--muted)}
+
+.section{margin-top:clamp(36px,6vw,56px)}
+.section h2.title{color:var(--text);font-size:1.2rem;margin-bottom:12px}
+.sources{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.source{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--card);font-size:.88rem}
+.source a{color:var(--text);font-weight:600;text-decoration:none}
+.source a:hover{color:var(--blue2)}
+.source span{color:var(--muted);white-space:nowrap}
+.source.down span{color:var(--amber2)}
+.note{font-size:.86rem;color:var(--muted);margin-top:12px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back" href="./">← Personal Digital Security Blueprint</a>
+
+  <header class="hdr">
+    <div class="kicker">sec-check · news</div>
+    <h1>Security news</h1>
+    <p class="sub">The latest headlines from government security agencies and trusted security news sites, collected in one place. Every story links to the original article on the source's site.</p>
+    <div id="updated" aria-live="polite">Loading…</div>
+  </header>
+
+  <div class="controls">
+    <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
+    <div class="row">
+      <input id="search" type="search" placeholder="Search headlines…" aria-label="Search headlines"/>
+      <select id="source" aria-label="Filter by source"><option value="">All sources</option></select>
+    </div>
+  </div>
+
+  <main id="list"></main>
+  <button class="more" id="more" type="button" hidden>Show more</button>
+
+  <section class="section">
+    <h2 class="title">Sources</h2>
+    <div class="sources" id="sources"></div>
+    <p class="note">Headlines, dates and short excerpts come from each source's public RSS or JSON feed, refreshed every few hours. The full story is always on the source's own site. Stories older than 30 days drop off.</p>
+  </section>
+
+  <footer>Part of <a href="./">sec-check</a> · Built your app with AI? <a href="scan.html">Scan it for leaked keys</a></footer>
+</div>
+
+<script>
+const PAGE_SIZE = 50;
+const $ = id => document.getElementById(id);
+const state = { tag: '', source: '', query: '', shown: PAGE_SIZE };
+let news = null;
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+    else node.setAttribute(k, v);
+  }
+  for (const c of children.flat()) if (c != null) node.append(c);
+  return node;
+}
+
+const safeHref = url => { try { const u = new URL(url); return /^https?:$/.test(u.protocol) ? u.href : null; } catch { return null; } };
+
+function ago(iso) {
+  const mins = Math.round((Date.now() - Date.parse(iso)) / 60000);
+  if (mins < 60) return `${Math.max(mins, 1)} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+  const days = Math.round(hours / 24);
+  return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
+function dayLabel(iso) {
+  const d = new Date(iso);
+  const today = new Date();
+  const yesterday = new Date(Date.now() - 86400000);
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+function matches(item, { tag, source, query }) {
+  if (tag && !item.tags.includes(tag)) return false;
+  if (source && item.source !== source) return false;
+  if (query && !`${item.title} ${item.summary}`.toLowerCase().includes(query)) return false;
+  return true;
+}
+
+function renderChips() {
+  const base = news.items.filter(i => matches(i, { ...state, tag: '' }));
+  const chip = (id, label) => {
+    const count = id ? base.filter(i => i.tags.includes(id)).length : base.length;
+    return el('button', {
+      class: 'chip', type: 'button', 'aria-pressed': String(state.tag === id),
+      onclick: () => { state.tag = id; state.shown = PAGE_SIZE; render(); },
+    }, label, el('span', { class: 'n' }, String(count)));
+  };
+  $('chips').replaceChildren(chip('', 'All'), ...news.categories.map(c => chip(c.id, c.label)));
+}
+
+function renderList() {
+  const names = Object.fromEntries(news.sources.map(s => [s.id, s.name]));
+  const labels = Object.fromEntries(news.categories.map(c => [c.id, c.label]));
+  const items = news.items.filter(i => matches(i, state));
+  const nodes = [];
+  let lastDay = '';
+  for (const item of items.slice(0, state.shown)) {
+    const href = safeHref(item.url);
+    if (!href) continue;
+    const day = dayLabel(item.published);
+    if (day !== lastDay) { nodes.push(el('h3', { class: 'day' }, day)); lastDay = day; }
+    nodes.push(el('a', { class: 'item', href, target: '_blank', rel: 'noopener noreferrer' },
+      el('div', { class: 'meta' },
+        el('span', { class: 'src' }, names[item.source] || item.source),
+        el('time', { datetime: item.published, title: new Date(item.published).toLocaleString() }, ago(item.published))),
+      el('h2', {}, item.title),
+      item.summary ? el('p', {}, item.summary) : null,
+      item.tags.length ? el('div', { class: 'tags' }, item.tags.map(t => el('span', { class: `tag ${t}` }, labels[t] || t))) : null));
+  }
+  if (!items.length) nodes.push(el('div', { class: 'empty' }, 'No stories match. Try another topic or clear the search.'));
+  $('list').replaceChildren(...nodes);
+  $('more').hidden = items.length <= state.shown;
+}
+
+function render() {
+  renderChips();
+  renderList();
+}
+
+function renderSources() {
+  $('sources').replaceChildren(...news.sources.map(s => {
+    const href = safeHref(s.site);
+    return el('div', { class: `source${s.ok ? '' : ' down'}` },
+      href ? el('a', { href, target: '_blank', rel: 'noopener noreferrer' }, s.name) : el('strong', {}, s.name),
+      el('span', { title: s.ok ? 'Fetched on the last update' : 'Could not be reached on the last update' }, s.ok ? `${s.count} stories` : 'unavailable'));
+  }));
+  const select = $('source');
+  for (const s of news.sources) select.append(el('option', { value: s.id }, s.name));
+}
+
+$('search').addEventListener('input', e => { state.query = e.target.value.trim().toLowerCase(); state.shown = PAGE_SIZE; render(); });
+$('source').addEventListener('change', e => { state.source = e.target.value; state.shown = PAGE_SIZE; render(); });
+$('more').addEventListener('click', () => { state.shown += PAGE_SIZE; renderList(); });
+
+fetch('news.json', { cache: 'no-cache' })
+  .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
+  .then(data => {
+    news = data;
+    $('updated').textContent = `Updated ${ago(news.generated)} · ${news.items.length} stories from ${news.sources.filter(s => s.ok).length} sources`;
+    renderSources();
+    render();
+  })
+  .catch(() => {
+    $('updated').textContent = 'News is not available right now.';
+    $('list').replaceChildren(el('div', { class: 'empty' }, 'The news feed has not been built yet. It is generated when the site is published.'));
+  });
+</script>
+</body>
+</html>
