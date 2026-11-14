@@ -6,6 +6,7 @@ Two things live here:
 
 - **[Personal Digital Security Blueprint](https://tejamakkena.github.io/sec-check/)**: a visual guide to protecting your identity, money, devices and data.
 - **[sec-check scanner](https://tejamakkena.github.io/sec-check/scan.html)**: a security check for apps built with AI tools such as Lovable, Bolt, Cursor, Replit and v0.
+- **[Security news](https://tejamakkena.github.io/sec-check/news.html)**: the latest headlines from security agencies and news sites, each linking to the original story.
 
 ## sec-check scanner
 
@@ -58,12 +59,19 @@ To silence a finding you have reviewed, put `sec-check-ignore` in a comment on t
 
 sec-check is static analysis with heuristics. It can't see tables, policies or rules you changed in a dashboard, and a clean result is not a guarantee. If you use Supabase, also run **Advisors → Security Advisor** in your project dashboard.
 
+## Security news
+
+`news.html` lists recent headlines from CISA's Known Exploited Vulnerabilities catalog, the UK NCSC, BleepingComputer, The Hacker News, SecurityWeek, The Record, Dark Reading, Krebs on Security, Schneier on Security, Troy Hunt, Malwarebytes Labs, WeLiveSecurity and Unit 42. Each story shows the headline, date and the short excerpt from the source's public feed, and links to the full article on the source's site. Stories are tagged by topic (actively exploited, breaches, ransomware, malware, scams, AI and supply chain, vulnerabilities) and drop off after 30 days.
+
+The Pages workflow builds `news.json` with `node news/fetch.js` on every deploy and every 3 hours. It is never committed. Sources are listed in `news/feeds.js`. GitHub pauses scheduled workflows after 60 days without repository activity; re-enable it from the Actions tab if the news stops updating.
+
 ### Development
 
 ```sh
 npm test                            # node:test, no dependencies
 node scanner/cli.js path/to/project
-python3 -m http.server              # then open http://localhost:8000/scan.html
+node news/fetch.js                  # builds news.json for news.html
+python3 -m http.server              # then open http://localhost:8000/scan.html or /news.html
 ```
 
 `scanner/rules.js` holds every rule and is shared by the CLI (`scanner/cli.js`) and the browser page (`scan.html`). The CLI reads `.git/index` itself (`scanner/git-index.js`) instead of running git, so scanning an untrusted project can never trigger that project's git config. `scanner/demo.js` is a deliberately insecure sample project. Its fake keys are generated at runtime so no credential-shaped strings are committed.

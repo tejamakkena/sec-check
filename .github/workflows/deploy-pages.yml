@@ -1,10 +1,14 @@
 name: Deploy static site to GitHub Pages
 
 # Publishes the repository root (index.html) to GitHub Pages.
-# Runs on every push to the default branch, and can be triggered manually.
+# Runs on every push to the default branch, every 3 hours to refresh the
+# security news page (news.json is built here, never committed), and can be
+# triggered manually.
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '17 */3 * * *'
   workflow_dispatch:
 
 # Grant the token the permissions required to deploy to Pages.
@@ -29,11 +33,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure Pages
+        id: pages
         uses: actions/configure-pages@v5
         with:
           # Provision the Pages site automatically on first run if it isn't
           # already enabled, so no manual Settings toggle is required.
           enablement: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Seeds from the live news.json so stories survive a source being down.
+      # A failure here must not block publishing the rest of the site.
+      - name: Build security news
+        continue-on-error: true
+        run: node news/fetch.js --out news.json --previous "${{ steps.pages.outputs.base_url }}/news.json"
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
